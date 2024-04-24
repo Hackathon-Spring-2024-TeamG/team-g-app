@@ -5,7 +5,7 @@ version: "3.9"
 services:
   db:
     # コンテナ名をmysqlに設定
-    container_name: MySQL
+    container_name: MySQL_G
     # MySQLのDockerfileをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
@@ -39,7 +39,7 @@ services:
 
   app:
     # コンテナ名をFlaskに設定
-    container_name: Flask
+    container_name: Flask_G
     # FlaskのDockerfileをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
