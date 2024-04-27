@@ -50,10 +50,12 @@ services:
     volumes:
       - ./ChatApp:/code
     # ローカルの5000番ポートとコンテナの5000番ポートをつなぐ
+    #
     ports:
       - "5001:5000"
     # コマンドを実行
-    command:  bash -c "python app.py"
+    # command:  bash -c "python app.py"
+    command: bash -c "FLASK_APP=app.py FLASK_ENV=development flask run --host=0.0.0.0 --port=5000"
     # 先にdbを起動してからappを起動する
     depends_on:
       db:
