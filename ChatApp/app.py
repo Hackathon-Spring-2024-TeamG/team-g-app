@@ -7,6 +7,10 @@ app = Flask(__name__)
 def signup():
     return render_template('registration/signup.html')
 
+# サインアップ処理
+# @app.route('/signup', methods=['POST'])
+# def userSignup():
+
 # ログインページの表示
 @app.route('/login')
 def login():
@@ -24,4 +28,4 @@ def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=False)
+    app.run(host="0.0.0.0", debug=True)
