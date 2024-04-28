@@ -4,14 +4,14 @@ from flask import abort
 
 class dbConnect:
     @staticmethod
-    def createUser(uid, name, email, password):
+    def createUser(name, email, crypted_password, self_introduction):
         conn = None
         cur = None
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
             sql = "INSERT INTO users (name, email, crypted_password, self_introduction) VALUES (%s, %s, %s, %s);"
-            cur.execute(sql, (name, password))
+            cur.execute(sql, (name, email, crypted_password, self_introduction))
             conn.commit()
         except Exception as e:
             print(str(e) + 'が発生しています')
@@ -34,12 +34,11 @@ class dbConnect:
             print(str(e), 'が発生しています')
             abort(500)
         finally:
-            cur.close()
         # curとconnがNoneでないかチェックしてからcloseを呼び出す
-        if cur:
-            cur.close()
-        if conn:
-            conn.close()
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
 
     def getChannelAll():
         cur = None
