@@ -18,3 +18,5 @@ shellescape==3.8.1
 SQLAlchemy==1.4.41
 urllib3==1.26.12
 Werkzeug==2.2.2
+bcrypt==4.1.2
+Flask-Bcrypt==1.0.1
