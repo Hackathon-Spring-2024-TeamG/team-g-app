@@ -59,7 +59,14 @@ def logout():
 # チャンネル一覧ページの表示
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # TODO:セッション情報取得およびリダイレクト処理
+    #uid = session.get("uid")
+    #if uid is None:
+    #    return redirect('/login')
+    #else:
+    channels = dbConnect.getChannelAll()
+    channels.reverse()
+    return render_template('index.html', channels=channels)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
