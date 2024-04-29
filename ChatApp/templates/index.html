@@ -1,3 +1,10 @@
 {% extends "base.html" %}
 
-{% block body %}<h1>環境破壊は気持ちいいぞい！</h1>{% endblock %}
+{% block body %}
+<h1>チャンネル一覧</h1>
+<ul>
+    {% for channel in channels %}
+    <li>{{ channel.name }} - {{ channel.description }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
