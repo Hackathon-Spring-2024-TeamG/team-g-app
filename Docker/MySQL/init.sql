@@ -11,7 +11,7 @@ CREATE TABLE users (
     name varchar(255) UNIQUE NOT NULL,
     email varchar(255) UNIQUE NOT NULL,
     crypted_password varchar(255) NOT NULL,
-    image varchar(255),
+    image varchar(255) NOT NULL DEFAULT '/static/img/user_default.png',
     self_introduction text,
     is_admin boolean NOT NULL DEFAULT 0,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
