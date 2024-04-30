@@ -9,6 +9,10 @@
                 <h2 class="mb-4">ユーザー登録</h2>
                 <form method="post">
                     <div class="mb-3">
+                      <p style="font-size: 18px;">アイコン設定</p>
+                        <img src="/static/img/user_default.png" alt="デフォルトユーザー画像" style="display: block; margin: auto; text-align: center;">
+                    </div>
+                    <div class="mb-3">
                         <label for="username" class="form-label">ユーザー名</label>
                         <input type="text" class="form-control" name="name" id="username" required>
                     </div>
@@ -24,7 +28,14 @@
                         <label for="password_confirmation" class="form-label">パスワード(確認用)</label>
                         <input type="password" class="form-control" name="password2" id="password_confirmation" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">登録</button>
+                    {% with messages = get_flashed_messages() %} {% if messages %}
+                    <ul class="flashes">
+                      {% for message in messages %}
+                      <li>{{ message }}</li>
+                      {% endfor %}
+                    </ul>
+                    {% endif %} {% endwith %}
+                    <button type="submit" class="btn btn-primary">登録する</button>
                 </form>
             </div>
         </div>

@@ -30,6 +30,8 @@ def userSignup():
         flash('入力されていないフォームがあります')
     elif password1 != password2:
         flash('２つのパスワードの値が違います。')
+    elif len(email) > 40:
+        flash('メールアドレスは40文字以内で入力してください。')
     elif re.match(pattern, email) is None:
         flash('正しいメールアドレスの形式で入力してください')
     else:
