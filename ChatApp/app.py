@@ -40,11 +40,10 @@ def userSignup():
     DBuser = dbConnect.getUser(email)
 
     if DBuser is not None:
-        flash('既に登録されています')
+        flash('既に登録されています', 'danger')
     else:
         UserId = dbConnect.createUser(name, email, crypted_password)
         session['uid'] = UserId
-        flash('登録が成功しました。')
         return redirect('/')
 
     return redirect('/signup')
@@ -53,6 +52,30 @@ def userSignup():
 @app.route('/login')
 def login():
     return render_template('registration/login.html')
+
+# ログイン処理
+@app.route('/login', methods=['POST'])
+def userLogin():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    print('password')
+
+    if not email or not password:
+        flash('空のフォームフィールドがあります', 'danger')
+        return redirect('/login')
+
+    user = dbConnect.getUser(email)
+    if not user:
+        flash('このユーザーは存在しません', 'danger')
+        return redirect('/login')
+
+    # bcrypt.check_password_hash関数を使って、DBから取得した暗号化済みのパスワードとユーザーが入力したパスワードを比較
+    if bcrypt.check_password_hash(user['crypted_password'], password):
+        session['uid'] = user['uid']
+        return redirect('/')
+    else:
+        flash('パスワードが間違っています', 'danger')
+        return redirect('/login')
 
 # ログアウト
 @app.route('/logout')
