@@ -7,4 +7,5 @@
     <li>{{ channel.name }} - {{ channel.description }}</li>
     {% endfor %}
 </ul>
+<a href="{{ url_for('logout') }}" class="btn btn-outline-danger">ログアウト</a>
 {% endblock %}
