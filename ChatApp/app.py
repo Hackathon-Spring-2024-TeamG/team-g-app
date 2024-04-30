@@ -1,15 +1,11 @@
 from flask import Flask, request, redirect, render_template, session, flash, abort
 from flask_bcrypt import Bcrypt
-import secrets
-from datetime import timedelta
-import re
-
+import secrets, re
 from models import dbConnect
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
-random_secret_key = secrets.token_hex(16)
-app.config['SECRET_KEY'] = random_secret_key
+app.config['SECRET_KEY'] = secrets.token_hex(16)
 
 # サインアップページの表示
 @app.route('/signup')
@@ -24,26 +20,33 @@ def userSignup():
     password1 = request.form.get('password1')
     password2 = request.form.get('password2')
 
-    pattern = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+    # バリデーションルールをリストとして管理
+    validations = [
+        (not name or not email or not password1 or not password2, '入力されていないフォームがあります'),
+        (password1 != password2, '２つのパスワードの値が違います。'),
+        (len(email) > 40, 'メールアドレスは40文字以内で入力してください。'),
+        (re.match("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email) is None, '正しいメールアドレスの形式で入力してください')
+    ]
 
-    if name == '' or email == '' or password1 == '' or password2 == '':
-        flash('入力されていないフォームがあります')
-    elif password1 != password2:
-        flash('２つのパスワードの値が違います。')
-    elif len(email) > 40:
-        flash('メールアドレスは40文字以内で入力してください。')
-    elif re.match(pattern, email) is None:
-        flash('正しいメールアドレスの形式で入力してください')
+    # バリデーションチェック
+    for check, message in validations:
+        if check:
+            flash(message, 'danger')
+            return redirect('/signup')
+
+    # パスワード暗号化。
+    crypted_password = bcrypt.generate_password_hash(password1).decode('utf8')
+    # 入力されたemailを持つユーザーが存在するか確認
+    DBuser = dbConnect.getUser(email)
+
+    if DBuser is not None:
+        flash('既に登録されています')
     else:
-        crypted_password = bcrypt.generate_password_hash(password1).decode('utf8')
-        DBuser = dbConnect.getUser(email)
+        UserId = dbConnect.createUser(name, email, crypted_password)
+        session['uid'] = UserId
+        flash('登録が成功しました。')
+        return redirect('/')
 
-        if DBuser is not None:
-            flash('既に登録されています')
-        else:
-            UserId = dbConnect.createUser(name, email, crypted_password)
-            session['uid'] = UserId
-            return redirect('/')
     return redirect('/signup')
 
 # ログインページの表示
