@@ -42,10 +42,9 @@ def userSignup():
             flash('既に登録されています')
         else:
             UserId = dbConnect.createUser(name, email, crypted_password)
-            session['id'] = UserId
+            session['uid'] = UserId
             return redirect('/')
     return redirect('/signup')
-
 
 # ログインページの表示
 @app.route('/login')

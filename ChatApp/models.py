@@ -7,13 +7,13 @@ class dbConnect:
     def createUser(name, email, crypted_password):
         conn = None
         cur = None
-        id = None
+        uid = None
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
             sql = "INSERT INTO users (name, email, crypted_password) VALUES (%s, %s, %s);"
             cur.execute(sql, (name, email, crypted_password))
-            id = cur.lastrowid # INSERT操作後に生成された自動増分IDを取得
+            uid = cur.lastrowid # INSERT操作後に生成された自動増分uidを取得
             conn.commit()
         except Exception as e:
             print(str(e) + 'が発生しています')
@@ -23,7 +23,7 @@ class dbConnect:
                 cur.close()
             if conn:
                 conn.close()
-        return id  # 生成されたユーザーのIDを返す
+        return uid  # 生成されたユーザーのuidを返す
 
     @staticmethod
     def getUser(email):
