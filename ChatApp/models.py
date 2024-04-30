@@ -4,14 +4,16 @@ from flask import abort
 
 class dbConnect:
     @staticmethod
-    def createUser(name, email, crypted_password, self_introduction):
+    def createUser(name, email, crypted_password):
         conn = None
         cur = None
+        id = None
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
-            sql = "INSERT INTO users (name, email, crypted_password, self_introduction) VALUES (%s, %s, %s, %s);"
-            cur.execute(sql, (name, email, crypted_password, self_introduction))
+            sql = "INSERT INTO users (name, email, crypted_password) VALUES (%s, %s, %s);"
+            cur.execute(sql, (name, email, crypted_password))
+            id = cur.lastrowid # INSERT操作後に生成された自動増分IDを取得
             conn.commit()
         except Exception as e:
             print(str(e) + 'が発生しています')
@@ -21,7 +23,9 @@ class dbConnect:
                 cur.close()
             if conn:
                 conn.close()
+        return id  # 生成されたユーザーのIDを返す
 
+    @staticmethod
     def getUser(email):
         try:
             conn = DB.getConnection()
