@@ -86,14 +86,30 @@ def logout():
 # チャンネル一覧ページの表示
 @app.route('/')
 def index():
-    # TODO:セッション情報取得およびリダイレクト処理
-    #uid = session.get("uid")
-    #if uid is None:
-    #    return redirect('/login')
-    #else:
-    channels = dbConnect.getChannelAll()
-    channels.reverse()
+    uid = session.get("uid")
+    if uid is None:
+        return redirect('/login')
+    else:
+        channels = dbConnect.getChannelAll()
+        channels.reverse()
     return render_template('index.html', channels=channels)
+
+#チャンネル作成
+@app.route('/', methods=['POST'])
+def add_channel():
+    uid = session.get('uid')
+    if uid is None:
+        return redirect('/login')
+    channel_title = request.form.get('channelTitle')
+    channel = dbConnect.getChannelByName(channel_title)
+    if channel == None:
+        channel_description = request.form.get('channelDescription')
+        channel_startdate = request.form.get('channelStartDate')
+        dbConnect.addChannel(channel_title, channel_description, channel_startdate)
+        return redirect('/')
+    else:
+        error = '既に同じ名前のチャンネルが存在しています'
+        return render_template('error/error.html', error_message=error)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
