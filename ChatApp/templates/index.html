@@ -1,11 +1,31 @@
 {% extends "base.html" %}
+{% block title %}home{% endblock %}
 
 {% block body %}
-<h1>チャンネル一覧</h1>
-<ul>
-    {% for channel in channels %}
-    <li>{{ channel.name }} - {{ channel.description }}</li>
-    {% endfor %}
-</ul>
+<div class="main-container">
+  <div class="channel-title">
+    <h1>CHANNELS</h1>
+    <p class="channel-title-text">ここはチャンネル一覧です</p>
+  </div>
+  <div id="channels-list-container">
+    <div id="channels-list">
+      <ul class="channel-box">
+        {% for channel in channels %}
+        <li>{{ channel.name }} - {{ channel.description }} - {{ channel.start_date}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div id="footer">
+    <p id="footer-text">チャンネル一覧だよ</p>
+  </div>
+  {% include 'modal/add-channel.html' %}
+</div>
 <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">ログアウト</a>
+<button id="add-channel-button" class="btn btn-primary">チャンネルを追加する</button>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/Channels/add-channel.js') }}" type="text/javascript"></script>
 {% endblock %}
