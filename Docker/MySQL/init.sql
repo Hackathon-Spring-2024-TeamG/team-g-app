@@ -25,7 +25,6 @@ CREATE TABLE channels (
     name varchar(255) NOT NULL,
     start_date date NOT NULL,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(cid)
 );
 
@@ -35,7 +34,6 @@ CREATE TABLE messages (
     cid integer NOT NULL,
     message text NOT NULL,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(mid),
     FOREIGN KEY (uid) REFERENCES users(uid),
     FOREIGN KEY (cid) REFERENCES channels(cid)
@@ -46,7 +44,6 @@ CREATE TABLE badges (
     mid integer NOT NULL,
     badge_type enum('GOLD', 'SILVER', 'BRONZE'),
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (uid) REFERENCES users(uid),
     FOREIGN KEY (mid) REFERENCES messages(mid)
 );
@@ -57,7 +54,6 @@ CREATE TABLE personal_channels (
     name varchar(255) NOT NULL,
     description text,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(pcid),
     FOREIGN KEY (uid) REFERENCES users(uid)
 );
