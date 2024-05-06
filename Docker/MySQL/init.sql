@@ -7,7 +7,7 @@ USE chatapp;
 GRANT ALL PRIVILEGES ON chatapp.* TO 'testuser';
 
 CREATE TABLE users (
-    uid integer NOT NULL AUTO_INCREMENT,
+    id integer NOT NULL AUTO_INCREMENT,
     name varchar(255) UNIQUE NOT NULL,
     email varchar(255) UNIQUE NOT NULL,
     crypted_password varchar(255) NOT NULL,
@@ -16,51 +16,51 @@ CREATE TABLE users (
     is_admin boolean NOT NULL DEFAULT 0,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY(uid)
+    PRIMARY KEY(id)
 );
 
 CREATE TABLE channels (
-    cid integer NOT NULL AUTO_INCREMENT,
+    id integer NOT NULL AUTO_INCREMENT,
     description text NOT NULL,
     name varchar(255) NOT NULL,
     start_date date NOT NULL,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(cid)
+    PRIMARY KEY(id)
 );
 
 CREATE TABLE messages (
-    mid integer NOT NULL AUTO_INCREMENT,
-    uid integer NOT NULL,
-    cid integer NOT NULL,
+    id integer NOT NULL AUTO_INCREMENT,
+    user_id integer NOT NULL,
+    channel_id integer NOT NULL,
     message text NOT NULL,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(mid),
-    FOREIGN KEY (uid) REFERENCES users(uid),
-    FOREIGN KEY (cid) REFERENCES channels(cid)
+    PRIMARY KEY(id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (channel_id) REFERENCES channels(id) ON DELETE CASCADE
 );
 
 CREATE TABLE badges (
-    uid integer NOT NULL,
-    mid integer NOT NULL,
+    user_id integer NOT NULL,
+    message_id integer NOT NULL,
     badge_type enum('GOLD', 'SILVER', 'BRONZE'),
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (uid) REFERENCES users(uid),
-    FOREIGN KEY (mid) REFERENCES messages(mid)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE
 );
 
 CREATE TABLE personal_channels (
-    pcid integer NOT NULL AUTO_INCREMENT,
-    uid integer UNIQUE NOT NULL,
+    id integer NOT NULL AUTO_INCREMENT,
+    user_id integer UNIQUE NOT NULL,
     name varchar(255) NOT NULL,
     description text,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(pcid),
-    FOREIGN KEY (uid) REFERENCES users(uid)
+    PRIMARY KEY(id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 INSERT INTO users (name, email, crypted_password, is_admin) VALUES ('admin', 'adadminmin@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 1);
 INSERT INTO users (name, email, crypted_password, self_introduction) VALUES ('chiikawa', 'chiikawa@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 'フ！');
 INSERT INTO channels (description, name, start_date) VALUES ('superぼっち部屋へようこそ', 'superぼっち部屋', '2024-04-27');
-INSERT INTO messages (uid, cid, message) VALUES (1, 1, 'ヤヤーンパパヒュパヒュパ');
-INSERT INTO badges (uid, mid, badge_type) VALUES (1, 1, 'GOLD');
-INSERT INTO personal_channels (uid, name, description) VALUES (1, 'virtual_chiikawa', '草むしり検定5級目指して頑張ります！');
+INSERT INTO messages (user_id, channel_id, message) VALUES (1, 1, 'ヤヤーンパパヒュパヒュパ');
+INSERT INTO badges (user_id, message_id, badge_type) VALUES (1, 1, 'GOLD');
+INSERT INTO personal_channels (user_id, name, description) VALUES (1, 'virtual_chiikawa', '草むしり検定5級目指して頑張ります！');
