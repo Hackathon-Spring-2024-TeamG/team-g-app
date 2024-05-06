@@ -58,7 +58,8 @@ CREATE TABLE personal_channels (
     FOREIGN KEY (uid) REFERENCES users(uid)
 );
 
-INSERT INTO users (name, email, crypted_password, self_introduction) VALUES ('chiikawa', 'chiikawa@example.com', '1111', 'フ！');
+INSERT INTO users (name, email, crypted_password, is_admin) VALUES ('admin', 'adadminmin@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 1);
+INSERT INTO users (name, email, crypted_password, self_introduction) VALUES ('chiikawa', 'chiikawa@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 'フ！');
 INSERT INTO channels (description, name, start_date) VALUES ('superぼっち部屋へようこそ', 'superぼっち部屋', '2024-04-27');
 INSERT INTO messages (uid, cid, message) VALUES (1, 1, 'ヤヤーンパパヒュパヒュパ');
 INSERT INTO badges (uid, mid, badge_type) VALUES (1, 1, 'GOLD');
