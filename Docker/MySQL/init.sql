@@ -25,7 +25,6 @@ CREATE TABLE channels (
     name varchar(255) NOT NULL,
     start_date date NOT NULL,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(cid)
 );
 
@@ -35,7 +34,6 @@ CREATE TABLE messages (
     cid integer NOT NULL,
     message text NOT NULL,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(mid),
     FOREIGN KEY (uid) REFERENCES users(uid),
     FOREIGN KEY (cid) REFERENCES channels(cid)
@@ -46,7 +44,6 @@ CREATE TABLE badges (
     mid integer NOT NULL,
     badge_type enum('GOLD', 'SILVER', 'BRONZE'),
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (uid) REFERENCES users(uid),
     FOREIGN KEY (mid) REFERENCES messages(mid)
 );
@@ -57,12 +54,12 @@ CREATE TABLE personal_channels (
     name varchar(255) NOT NULL,
     description text,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(pcid),
     FOREIGN KEY (uid) REFERENCES users(uid)
 );
 
-INSERT INTO users (name, email, crypted_password, self_introduction) VALUES ('chiikawa', 'chiikawa@example.com', '1111', 'フ！');
+INSERT INTO users (name, email, crypted_password, is_admin) VALUES ('admin', 'adadminmin@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 1);
+INSERT INTO users (name, email, crypted_password, self_introduction) VALUES ('chiikawa', 'chiikawa@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 'フ！');
 INSERT INTO channels (description, name, start_date) VALUES ('superぼっち部屋へようこそ', 'superぼっち部屋', '2024-04-27');
 INSERT INTO messages (uid, cid, message) VALUES (1, 1, 'ヤヤーンパパヒュパヒュパ');
 INSERT INTO badges (uid, mid, badge_type) VALUES (1, 1, 'GOLD');

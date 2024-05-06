@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}個人チャンネル一覧{% endblock %}
+
+{% block body %}
+  <div class="main-container">
+    <div class="channel-title">
+      <h1>PersonalChannels</h1>
+      <p class="channel-title-text">ここは個人チャンネル一覧です</p>
+    </div>
+    <div id="p_channels-list-container">
+      <div id="p_channels-list">
+        <ul class="channel-box">
+          {% for p_channel in p_channels %}
+            <li>{{ p_channel.name }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div id="footer">
+      <p id="footer-text">個人チャンネル一覧だよ</p>
+    </div>
+    {% include 'modal/add-channel.html' %}
+  </div>
+  <a href="{{ url_for('index') }}" class="btn btn-outline-primary">チャンネル一覧へ</a>
+  <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">ログアウト</a>
+{% endblock %}
+
+{% block script %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/Channels/add-channel.js') }}" type="text/javascript"></script>
+{% endblock %}

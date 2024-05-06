@@ -22,6 +22,7 @@
   {% include 'modal/add-channel.html' %}
 </div>
 <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">ログアウト</a>
+<a href="{{ url_for('show_personal_channels') }}" class="btn btn-outline-success">個人チャンネル一覧へ</a>
 <button id="add-channel-button" class="btn btn-primary">チャンネルを追加する</button>
 {% endblock %}
 
