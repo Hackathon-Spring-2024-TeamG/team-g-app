@@ -111,5 +111,16 @@ def add_channel():
         error = '既に同じ名前のチャンネルが存在しています'
         return render_template('error/error.html', error_message=error)
 
+# 個人チャンネル一覧ページの表示
+@app.route('/personal_channels')
+def show_personal_channels():
+    uid = session.get("uid")
+    if uid is None:
+        return redirect('/login')
+    else:
+        p_channels = dbConnect.getPersonalChannelALL()
+        p_channels.reverse()
+    return render_template('list_personal_channels.html', p_channels=p_channels, uid=uid)
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
