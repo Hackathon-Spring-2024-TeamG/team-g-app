@@ -11,11 +11,22 @@ class dbConnect:
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
+            # トランザクション開始
+            cur.execute("START TRANSACTION")
+            # ユーザー登録
             sql = "INSERT INTO users (name, email, crypted_password) VALUES (%s, %s, %s);"
             cur.execute(sql, (name, email, crypted_password))
             uid = cur.lastrowid # INSERT操作後に生成された自動増分uidを取得
+            # パーソナルチャンネル作成
+            channel_name = f"{name}'s Channel"
+            sql = "INSERT INTO personal_channels (uid, name) VALUES (%s, %s)"
+            cur.execute(sql, (uid, channel_name))
+            # トランザクションコミット
             conn.commit()
         except Exception as e:
+            # エラー発生時はロールバック
+            if conn:
+                conn.rollback()
             print(str(e) + 'が発生しています')
             abort(500)
         finally:
