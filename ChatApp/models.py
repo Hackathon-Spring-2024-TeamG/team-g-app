@@ -88,3 +88,19 @@ class dbConnect:
         finally:
             if cur is not None:
                 cur.close()
+
+    def getPersonalChannelALL():
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "SELECT * FROM personal_channels;"
+            cur.execute(sql)
+            p_channels = cur.fetchall()
+            return p_channels
+        except Excepton as e:
+            print(str(e), 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
