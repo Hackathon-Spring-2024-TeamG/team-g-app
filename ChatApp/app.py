@@ -43,7 +43,7 @@ def userSignup():
         flash('既に登録されています', 'danger')
     else:
         UserId = dbConnect.createUser(name, email, crypted_password)
-        session['uid'] = UserId
+        session['id'] = UserId
         return redirect('/')
 
     return redirect('/signup')
@@ -71,7 +71,7 @@ def userLogin():
 
     # bcrypt.check_password_hash関数を使って、DBから取得した暗号化済みのパスワードとユーザーが入力したパスワードを比較
     if bcrypt.check_password_hash(user['crypted_password'], password):
-        session['uid'] = user['uid']
+        session['id'] = user['id']
         return redirect('/')
     else:
         flash('パスワードが間違っています', 'danger')
@@ -86,19 +86,19 @@ def logout():
 # チャンネル一覧ページの表示
 @app.route('/')
 def index():
-    uid = session.get("uid")
-    if uid is None:
+    id = session.get("id")
+    if id is None:
         return redirect('/login')
     else:
         channels = dbConnect.getChannelAll()
         channels.reverse()
-    return render_template('index.html', channels=channels)
+    return render_template('index.html', channels=channels, id=id)
 
 #チャンネル作成
 @app.route('/', methods=['POST'])
 def add_channel():
-    uid = session.get('uid')
-    if uid is None:
+    id = session.get('id')
+    if id is None:
         return redirect('/login')
     channel_title = request.form.get('channelTitle')
     channel = dbConnect.getChannelByName(channel_title)
@@ -114,13 +114,13 @@ def add_channel():
 # 個人チャンネル一覧ページの表示
 @app.route('/personal_channels')
 def show_personal_channels():
-    uid = session.get("uid")
-    if uid is None:
+    id = session.get("id")
+    if id is None:
         return redirect('/login')
     else:
         p_channels = dbConnect.getPersonalChannelALL()
         p_channels.reverse()
-    return render_template('list_personal_channels.html', p_channels=p_channels, uid=uid)
+    return render_template('list_personal_channels.html', p_channels=p_channels, id=id)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
