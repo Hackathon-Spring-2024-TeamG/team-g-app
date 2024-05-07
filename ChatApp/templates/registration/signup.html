@@ -39,10 +39,14 @@
           <label for="password_confirmation" class="form-label">パスワード(確認用)</label>
           <input type="password" class="form-control" name="password2" id="password_confirmation" required>
         </div>
-        <button type="submit" class="btn btn-primary">登録する</button>
-        <a href="{{ url_for('login') }}" class="btn btn-outline-primary">ログインする</a>
+        <div class="d-flex justify-content-center my-4 gap-2">
+            <button type="submit" class="btn btn-primary flex-grow-1">登録する</button>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-primary flex-grow-1">ログインはこちら</a>
+          </div>
       </form>
     </div>
   </div>
 </div>
 {% endblock %}
+
+{% block footer_text %}Signup{% endblock %}

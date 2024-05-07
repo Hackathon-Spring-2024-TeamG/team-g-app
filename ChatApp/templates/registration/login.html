@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "registration/base.html" %}
 
 {% block title %}<title>ログイン</title>{% endblock %}
 
@@ -27,10 +27,14 @@
             <label for="password" class="form-label">パスワード</label>
             <input type="password" class="form-control" name="password" id="password" required>
           </div>
-          <button type="submit" class="btn btn-primary">ログイン</button>
-          <a href="{{ url_for('signup') }}" class="btn btn-outline-primary">ユーザー登録はこちら</a>
+          <div class="d-flex justify-content-center my-4 gap-2">
+            <button type="submit" class="btn btn-primary flex-grow-1">ログイン</button>
+            <a href="{{ url_for('signup') }}" class="btn btn-outline-primary flex-grow-1">ユーザー登録はこちら</a>
+          </div>
         </form>
       </div>
     </div>
   </div>
 {% endblock %}
+
+{% block footer_text %}Login{% endblock %}
