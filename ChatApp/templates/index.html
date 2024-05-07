@@ -1,30 +1,62 @@
 {% extends "base.html" %}
+
 {% block title %}home{% endblock %}
 
 {% block body %}
-<div class="main-container">
-  <div class="channel-title">
-    <h1>CHANNELS</h1>
-    <p class="channel-title-text">ここはチャンネル一覧です</p>
-  </div>
-  <div id="channels-list-container">
-    <div id="channels-list">
-      <ul class="channel-box">
-        {% for channel in channels %}
-        <li>{{ channel.name }} - {{ channel.description }} - {{ channel.start_date}}</li>
-        {% endfor %}
-      </ul>
+<div class="container my-5">
+  <div class="row">
+    <div class="col-12">
+      <div class="channel-title text-center mb-4">
+        <h2>CHANNELS</h2>
+        <p class="channel-title-text text-muted">ここはチャンネル一覧です</p>
+      </div>
     </div>
   </div>
-  <div id="footer">
-    <p id="footer-text">チャンネル一覧だよ</p>
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <ul class="nav nav-pills nav-fill gap-2 p-1 small bg-primary rounded-5 shadow-sm mb-4" id="pillNav2" role="tablist" style="--bs-nav-link-color: var(--bs-white); --bs-nav-pills-link-active-color: var(--bs-primary); --bs-nav-pills-link-active-bg: var(--bs-white);">
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active rounded-5" id="home-tab2" href="{{ url_for('index') }}" role="button" aria-selected="true">Home</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link rounded-5" id="profile-tab2" href="{{ url_for('show_personal_channels') }}" role="button" aria-selected="false">Personal</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link rounded-5" id="past-tab2" href="#" role="button" aria-selected="false">Past</a>
+        </li>
+      </ul>
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">チャンネル一覧</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            {% for channel in channels %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="mb-1">{{ channel.name }}</h5>
+                <p class="mb-0 text-muted">{{ channel.description }}</p>
+              </div>
+              <small class="text-muted">{{ channel.start_date }}</small>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
-  {% include 'modal/add-channel.html' %}
+  <div class="row mt-4">
+    <div class="col-12 text-center">
+      <button id="add-channel-button" class="btn btn-primary" data-toggle="modal" data-target="#addChannelModal">チャンネルを追加する</button>
+    </div>
+  </div>
 </div>
-<a href="{{ url_for('logout') }}" class="btn btn-outline-danger">ログアウト</a>
-<a href="{{ url_for('show_personal_channels') }}" class="btn btn-outline-success">個人チャンネル一覧へ</a>
-<button id="add-channel-button" class="btn btn-primary">チャンネルを追加する</button>
+
+{% include 'modal/add-channel.html' %}
+
 {% endblock %}
+
+{% block footer_text %}チャンネル一覧だよ{% endblock %}
 
 {% block script %}
 {{ super() }}

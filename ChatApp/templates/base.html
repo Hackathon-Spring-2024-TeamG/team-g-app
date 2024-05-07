@@ -7,9 +7,66 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   {% block head %}{% endblock %}
+  <style>
+    #footer {
+      background-color: #f8f9fa;
+      padding: 20px 0;
+      border-top: 1px solid #e7e7e7;
+      font-size: 14px;
+      color: #6c757d;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  {% block body %}{% endblock %}
+  <header class="p-3 mb-3 border-bottom bg-primary">
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+          <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+        </a>
+        <span class="fs-4" style="color: #fff;">Badgily</span>
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+          <!-- <li><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
+          <li><a href="#" class="nav-link px-2 link-body-emphasis">Inventory</a></li>
+          <li><a href="#" class="nav-link px-2 link-body-emphasis">Customers</a></li>
+          <li><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li> -->
+        </ul>
+
+        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+          <!-- <input type="search" class="form-control" placeholder="Search..." aria-label="Search"> -->
+        </form>
+
+        <div class="dropdown text-end">
+          <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="/static/img/user_default.png" alt="" width="32" height="32" class="rounded-circle">
+          </a>
+          <ul class="dropdown-menu text-small">
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ url_for('logout') }}">ログアウト</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {% block body %}
+  
+  {% endblock %}
+
+  <footer class="row mt-4">
+    <div class="col-12">
+      <div id="footer" class="text-center">
+        <p id="footer-text" class="text-muted">{% block footer_text %}一覧だよ{% endblock %}</p>
+        <p><a href="/privacy">プライバシーポリシー</a> | <a href="/terms">利用規約</a></p>
+      </div>
+    </div>
+  </footer>
 
   {% block script %}
   <!-- Bootstrap JS with Popper -->
