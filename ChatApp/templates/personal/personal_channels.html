@@ -46,9 +46,35 @@
             </li>
             {% endfor %}
           </ul>
-
         </div>
       </div>
+      <div class="text-end">
+        <button id="add-channel-button" class="my-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-channel-modal">個人チャンネル作成</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="add-channel-modal" class="modal fade" tabindex="-1" aria-labelledby="addChannelModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addChannelModalLabel">個人チャンネルを作成</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる">
+        </button>
+      </div>
+      <form name="addChannelForm" class="modal-body" action="/personal_channels" method="POST">
+        <div class="mb-3">
+          <input type="text" class="form-control" placeholder="個人チャンネル名" name="channelTitle" required>
+        </div>
+        <div class="mb-3">
+          <input type="text" class="form-control" placeholder="個人チャンネルの説明" name="channelDescription" required>
+        </div>
+        <div class="mb-3">
+          <input type="date" class="form-control" name="channelStartDate" required>
+        </div>
+        <button type="submit" class="btn btn-primary mx-auto d-block w-50" id="add-channel-confirmation-button">登録</button>
+      </form>
     </div>
   </div>
 </div>
@@ -59,7 +85,3 @@
 
 {% block footer_text %}個人チャンネル一覧だよ{% endblock %}
 
-{% block script %}
-  {{ super() }}
-  <script src="{{ url_for('static', filename='js/Channels/add-channel.js') }}" type="text/javascript"></script>
-{% endblock %}

@@ -43,22 +43,37 @@
           </ul>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="row mt-4">
-    <div class="col-12 text-center">
-      <button id="add-channel-button" class="btn btn-primary" data-toggle="modal" data-target="#addChannelModal">チャンネルを追加する</button>
+      <div class="text-end">
+        <button id="add-channel-button" class="my-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-channel-modal">チャンネルを追加する</button>
+      </div>
     </div>
   </div>
 </div>
 
-{% include 'modal/add-channel.html' %}
+<div id="add-channel-modal" class="modal fade" tabindex="-1" aria-labelledby="addChannelModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addChannelModalLabel">チャンネルを追加</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる">
+        </button>
+      </div>
+      <form name="addChannelForm" class="modal-body" action="/" method="POST">
+        <div class="mb-3">
+          <input type="text" class="form-control" placeholder="チャンネル名" name="channelTitle" required>
+        </div>
+        <div class="mb-3">
+          <input type="text" class="form-control" placeholder="チャンネルの説明" name="channelDescription" required>
+        </div>
+        <div class="mb-3">
+          <input type="date" class="form-control" name="channelStartDate" required>
+        </div>
+        <button type="submit" class="btn btn-primary mx-auto d-block w-50" id="add-channel-confirmation-button">登録</button>
+      </form>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
 
 {% block footer_text %}チャンネル一覧だよ{% endblock %}
-
-{% block script %}
-{{ super() }}
-<script src="{{ url_for('static', filename='js/Channels/add-channel.js') }}" type="text/javascript"></script>
-{% endblock %}
