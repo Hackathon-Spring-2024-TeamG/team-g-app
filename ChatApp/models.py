@@ -39,6 +39,8 @@ class dbConnect:
 
     @staticmethod
     def getUser(email):
+        conn = None
+        cur = None
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
@@ -57,6 +59,7 @@ class dbConnect:
                 conn.close()
 
     def getChannelAll():
+        conn = None
         cur = None
         try:
             conn = DB.getConnection()
@@ -71,8 +74,12 @@ class dbConnect:
         finally:
             if cur is not None:
                 cur.close()
+            if conn is not None:
+                conn.close()
 
     def getChannelByName(channel_name):
+        conn = None
+        cur = None
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
@@ -86,8 +93,12 @@ class dbConnect:
         finally:
             if cur is not None:
                 cur.close()
+            if conn is not None:
+                conn.close()
 
     def addChannel(newChannelName, newChannelDescription, newStartDate):
+        conn = None
+        cur = None
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
@@ -100,9 +111,12 @@ class dbConnect:
         finally:
             if cur is not None:
                 cur.close()
+            if conn is not None:
+                conn.close()
 
     @staticmethod
     def getPersonalChannelALL():
+        conn = None
         cur = None
         try:
             conn = DB.getConnection()
@@ -117,9 +131,12 @@ class dbConnect:
         finally:
             if cur is not None:
                 cur.close()
+            if conn is not None:
+                conn.close()
 
     @staticmethod
     def getUserAccount(user_id):
+        conn = None
         cur = None
         try:
             conn = DB.getConnection()
@@ -134,3 +151,5 @@ class dbConnect:
         finally:
             if cur is not None:
                 cur.close()
+            if conn is not None:
+                conn.close()
