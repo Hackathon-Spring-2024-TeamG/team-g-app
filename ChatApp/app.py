@@ -120,7 +120,7 @@ def show_personal_channels():
     else:
         p_channels = dbConnect.getPersonalChannelALL()
         p_channels.reverse()
-    return render_template('list_personal_channels.html', p_channels=p_channels, user_id=user_id)
+    return render_template('/personal/personal_channels.html', p_channels=p_channels, user_id=user_id)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
