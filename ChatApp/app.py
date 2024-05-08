@@ -121,6 +121,21 @@ def show_personal_channels():
         p_channels.reverse()
     return render_template('/personal/personal_channels.html', p_channels=p_channels, user_id=user_id)
 
+# 個人チャンネルの削除
+@app.route('/personal_channels/delete/<int:personal_channel_id>')
+def delete_personal_channel(personal_channel_id):
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect('/login')
+    else:
+        personal_channel = dbConnect.getPersonalChannelById(personal_channel_id)
+        if personal_channel["user_id"] != user_id:
+            flash('チャンネルは作成者のみ削除可能です')
+            return redirect ('/')
+        else:
+            dbConnect.deletePersonalChannel(personal_channel_id)
+            return redirect('/personal_channels')
+
 # アカウントページ表示
 @app.route('/account')
 def show_account():
