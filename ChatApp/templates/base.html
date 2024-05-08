@@ -43,10 +43,10 @@
 
         <div class="dropdown text-end">
           <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="/static/img/user_default2.png" alt="" width="32" height="32" class="rounded-circle">
+            <img src="/static/img/user_default02.png" alt="デフォルトユーザー画像" width="32" height="32" class="rounded-circle">
           </a>
           <ul class="dropdown-menu text-small">
-            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('show_account') }}">アカウント設定</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{{ url_for('logout') }}">ログアウト</a></li>
           </ul>
@@ -56,7 +56,7 @@
   </header>
 
   {% block body %}
-  
+
   {% endblock %}
 
   <footer class="row mt-4">
