@@ -58,7 +58,6 @@ def login():
 def userLogin():
     email = request.form.get('email')
     password = request.form.get('password')
-    print('password')
 
     if not email or not password:
         flash('空のフォームフィールドがあります', 'danger')
@@ -121,6 +120,16 @@ def show_personal_channels():
         p_channels = dbConnect.getPersonalChannelALL()
         p_channels.reverse()
     return render_template('/personal/personal_channels.html', p_channels=p_channels, user_id=user_id)
+
+# アカウントページ表示
+@app.route('/account')
+def show_account():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect('/login')
+    else:
+        account = dbConnect.getUserAccount(user_id)
+    return render_template('account.html', account=account, user_id=user_id)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
