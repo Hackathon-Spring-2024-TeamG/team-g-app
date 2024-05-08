@@ -22,12 +22,12 @@
           <a class="nav-link active rounded-5" id="profile-tab2" href="{{ url_for('show_personal_channels') }}" role="button" aria-selected="true">Personal</a>
         </li>
         <li class="nav-item" role="presentation">
-          <a class="nav-link rounded-5" id="past-tab2" href="#" role="button" aria-selected="false">Past</a>
+          <a class="nav-link rounded-5" id="past-tab2" href="#" role="button" aria-selected="false">Archive</a>
         </li>
       </ul>
       <div class="card">
         <div class="card-header">
-          <h5 class="mb-0">チャンネル一覧</h5>
+          <h5 class="mb-0">個人チャンネル一覧</h5>
         </div>
         <div class="card-body">
           <ul class="list-group list-group-flush">
@@ -37,9 +37,16 @@
                 <h5 class="mb-1">{{ p_channel.name }}</h5>
                 <p class="mb-0 text-muted">{{ p_channel.description }}</p>
               </div>
+              {% if p_channel.user_id == user_id %}
+              <div>
+                <a href="/personal_channels/edit/{{ p_channel.id }}" class="btn btn-outline-primary btn-sm">編集</a>
+                <a href="/personal_channels/delete/{{ p_channel.id }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('本当に削除しますか？');">削除</a>
+              </div>
+              {% endif %}
             </li>
             {% endfor %}
           </ul>
+
         </div>
       </div>
     </div>
