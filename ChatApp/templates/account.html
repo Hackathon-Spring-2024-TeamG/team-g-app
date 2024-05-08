@@ -1,0 +1,38 @@
+{% extends "/base.html" %}
+
+{% block title %}ユーザー情報{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h2 class="mb-4">アカウント設定</h2>
+      <form method="post">
+        <div class="mb-4">
+          <p style="font-size: 18px;">アイコン</p>
+          <img src="{{ user_icon_url or '/static/img/user_default01.png' }}" alt="ユーザー画像" style="display: block; margin: auto; text-align: center; width: 200px; height: 200px; margin-bottom: 16px;">
+          <input type="file" class="form-control" name="icon" style="margin-top: 10px;">
+        </div>
+        <div class="mb-3">
+          <label for="username" class="form-label">ユーザー名</label>
+          <input type="text" class="form-control" name="name" id="username" value="{{ account['name'] }}" required>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">メールアドレス</label>
+          <input type="email" class="form-control" name="email" id="email" value="{{ account['email'] }}" required>
+        </div>
+        <div class="mb-3">
+          <label for="self_introduction" class="form-label">気合の一言（自己紹介）</label>
+          <textarea id="self_introduction" class="form-control" name="self_introduction" rows="2" cols="30"></textarea>
+        </div>
+        <div class="d-flex justify-content-center my-4 gap-2">
+            <button type="submit" class="btn btn-primary flex-grow-1">更新する</button>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-primary flex-grow-1">HOMEへ戻る</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer_text %}Account{% endblock %}
