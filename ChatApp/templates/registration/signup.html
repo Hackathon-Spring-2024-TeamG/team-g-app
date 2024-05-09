@@ -21,7 +21,7 @@
       <form method="post">
         <div class="mb-3">
           <p style="font-size: 18px;">アイコン設定</p>
-          <img src="/static/img/user_default.png" alt="デフォルトユーザー画像" style="display: block; margin: auto; text-align: center; width: 200px; height: 200px;">
+          <img src="/static/img/user_default01.png" alt="デフォルトユーザー画像" style="display: block; margin: auto; text-align: center; width: 200px; height: 200px;">
         </div>
         <div class="mb-3">
           <label for="username" class="form-label">ユーザー名</label>
@@ -39,10 +39,14 @@
           <label for="password_confirmation" class="form-label">パスワード(確認用)</label>
           <input type="password" class="form-control" name="password2" id="password_confirmation" required>
         </div>
-        <button type="submit" class="btn btn-primary">登録する</button>
-        <a href="{{ url_for('login') }}" class="btn btn-outline-primary">ログインする</a>
+        <div class="d-flex justify-content-center my-4 gap-2">
+            <button type="submit" class="btn btn-primary flex-grow-1">登録する</button>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-primary flex-grow-1">ログインはこちら</a>
+          </div>
       </form>
     </div>
   </div>
 </div>
 {% endblock %}
+
+{% block footer_text %}Signup{% endblock %}

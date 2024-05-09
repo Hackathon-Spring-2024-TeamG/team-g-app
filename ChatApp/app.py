@@ -58,7 +58,6 @@ def login():
 def userLogin():
     email = request.form.get('email')
     password = request.form.get('password')
-    print('password')
 
     if not email or not password:
         flash('空のフォームフィールドがあります', 'danger')
@@ -106,10 +105,11 @@ def add_channel():
         channel_description = request.form.get('channelDescription')
         channel_startdate = request.form.get('channelStartDate')
         dbConnect.addChannel(channel_title, channel_description, channel_startdate)
+        flash('チャンネルが正常に作成されました。', 'success')
         return redirect('/')
     else:
-        error = '既に同じ名前のチャンネルが存在しています'
-        return render_template('error/error.html', error_message=error)
+        flash('既に同じ名前のチャンネルが存在しています', 'danger')
+        return redirect('/')
 
 # 個人チャンネル一覧ページの表示
 @app.route('/personal_channels')
@@ -120,7 +120,53 @@ def show_personal_channels():
     else:
         p_channels = dbConnect.getPersonalChannelALL()
         p_channels.reverse()
-    return render_template('list_personal_channels.html', p_channels=p_channels, user_id=user_id)
+    return render_template('/personal/personal_channels.html', p_channels=p_channels, user_id=user_id)
+
+# 個人チャンネルの作成
+@app.route('/personal_channels', methods=['POST'])
+def add_personal_channels():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+
+    personal_channel = dbConnect.getPersonalChannelByUserId(user_id)
+
+    if personal_channel is None:
+        p_channel_name = request.form.get('personalChannelName')
+        p_channel_description = request.form.get('personalChannelDescription')
+        dbConnect.createPersonalChannel(user_id, p_channel_name, p_channel_description)
+        flash('個人チャンネルが正常に作成されました。', 'success')
+        return redirect('/personal_channels')
+    else:
+        flash('個人チャンネルは既に存在します。', 'danger')
+        return redirect('/personal_channels')
+
+
+# 個人チャンネルの削除
+@app.route('/personal_channels/delete/<int:personal_channel_id>')
+def delete_personal_channel(personal_channel_id):
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect('/login')
+    else:
+        personal_channel = dbConnect.getPersonalChannelById(personal_channel_id)
+        if personal_channel["user_id"] != user_id:
+            flash('チャンネルは作成者のみ削除可能です', 'danger')
+            return redirect ('/')
+        else:
+            dbConnect.deletePersonalChannel(personal_channel_id)
+            flash('個人チャンネルは正常に削除されました。', 'success')
+            return redirect('/personal_channels')
+
+# アカウントページ表示
+@app.route('/account')
+def show_account():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect('/login')
+    else:
+        account = dbConnect.getUserAccount(user_id)
+    return render_template('account.html', account=account, user_id=user_id)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)

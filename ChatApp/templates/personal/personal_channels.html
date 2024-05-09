@@ -1,0 +1,135 @@
+{% extends "/base.html" %}
+
+{% block title %}個人チャンネル一覧{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+  <div class="col-8 mx-auto">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <!-- 各メッセージはBootstrapのアラートを使用して表示。-->
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  </div>
+  <div class="row">
+    <div class="col-8 mx-auto">
+      <div class="channel-title text-center mb-4">
+        <h2>PERSONAL CHANNELS</h2>
+        <p class="channel-title-text text-muted">ここは個人チャンネル一覧です</p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <ul class="nav nav-pills nav-fill gap-2 p-1 small bg-primary rounded-5 shadow-sm mb-4" id="pillNav2" role="tablist" style="--bs-nav-link-color: var(--bs-white); --bs-nav-pills-link-active-color: var(--bs-primary); --bs-nav-pills-link-active-bg: var(--bs-white);">
+        <li class="nav-item" role="presentation">
+          <a class="nav-link rounded-5" id="home-tab2" href="{{ url_for('index') }}" role="button" aria-selected="false">Home</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active rounded-5" id="profile-tab2" href="{{ url_for('show_personal_channels') }}" role="button" aria-selected="true">Personal</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link rounded-5" id="past-tab2" href="#" role="button" aria-selected="false">Archive</a>
+        </li>
+      </ul>
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">個人チャンネル一覧</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            {% for p_channel in p_channels %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="mb-1">{{ p_channel.name }}</h5>
+                <p class="mb-0 text-muted">{{ p_channel.description }}</p>
+              </div>
+              {% if p_channel.user_id == user_id %}
+              <div>
+                <a href="/personal_channels/edit/{{ p_channel.id }}" class="btn btn-outline-primary btn-sm">編集</a>
+                <!-- <a href="/personal_channels/delete/{{ p_channel.id }}" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal">削除</a> -->
+                <!-- これはモーダルを表示するためのリンクです -->
+                <a href="#" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal" data-href="/personal_channels/delete/{{ p_channel.id }}">削除</a>
+
+              </div>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="text-end">
+        <button id="add-channel-button" class="my-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-channel-modal">個人チャンネル作成</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 個人チャンネル作成時のモーダル -->
+<div id="add-channel-modal" class="modal fade" tabindex="-1" aria-labelledby="addChannelModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addChannelModalLabel">個人チャンネルを作成</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる">
+        </button>
+      </div>
+      <form name="addChannelForm" class="modal-body" action="/personal_channels" method="POST">
+        <div class="mb-3">
+          <input type="text" class="form-control" placeholder="個人チャンネル名" name="personalChannelName" required>
+        </div>
+        <div class="mb-3">
+          <input type="text" class="form-control" placeholder="個人チャンネルの説明" name="personalChannelDescription" required>
+        </div>
+        <button type="submit" class="btn btn-primary mx-auto d-block w-50" id="add-channel-confirmation-button">登録</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-confirmation-modal" class="modal fade" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmationModalLabel">個人チャンネルの削除確認</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+      </div>
+      <div class="modal-body">
+        <p>本当にこの個人チャンネルを削除してもよろしいですか？</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-outline-secondary" data-bs-dismiss="modal">キャンセル</a>
+        <!-- これは実際に削除処理を行うためのリンクです -->
+        <a href="#" class="btn btn-outline-danger" id="delete-confirmation-link">削除</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'modal/add-channel.html' %}
+
+{% endblock %}
+
+{% block footer_text %}個人チャンネル一覧だよ{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // モーダルを表示するリンクにイベントリスナーを設定
+    var deleteButton = document.querySelectorAll('[data-bs-toggle="modal"]');
+    deleteButton.forEach(function(btn) {
+      btn.addEventListener('click', function () {
+        var deleteUrl = btn.getAttribute('data-href'); // data-href属性から削除URLを取得
+        document.getElementById('delete-confirmation-link').href = deleteUrl; // 「削除」リンクにURLを設定
+      });
+    });
+  });
+</script>
+{% endblock %}
