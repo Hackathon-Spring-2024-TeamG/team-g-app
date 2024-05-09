@@ -105,10 +105,11 @@ def add_channel():
         channel_description = request.form.get('channelDescription')
         channel_startdate = request.form.get('channelStartDate')
         dbConnect.addChannel(channel_title, channel_description, channel_startdate)
+        flash('チャンネルが正常に作成されました。', 'success')
         return redirect('/')
     else:
-        error = '既に同じ名前のチャンネルが存在しています'
-        return render_template('error/error.html', error_message=error)
+        flash('既に同じ名前のチャンネルが存在しています', 'danger')
+        return redirect('/')
 
 # 個人チャンネル一覧ページの表示
 @app.route('/personal_channels')

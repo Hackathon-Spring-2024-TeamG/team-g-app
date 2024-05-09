@@ -4,8 +4,20 @@
 
 {% block body %}
 <div class="container my-5">
+  <div class="col-8 mx-auto">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <!-- 各メッセージはBootstrapのアラートを使用して表示。-->
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  </div>
   <div class="row">
-    <div class="col-12">
+    <div class="col-8 mx-auto">
       <div class="channel-title text-center mb-4">
         <h2>CHANNELS</h2>
         <p class="channel-title-text text-muted">ここはチャンネル一覧です</p>
