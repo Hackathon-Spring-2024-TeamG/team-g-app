@@ -125,7 +125,7 @@ class dbConnect:
             cur.execute(sql)
             p_channels = cur.fetchall()
             return p_channels
-        except Excepton as e:
+        except Exception as e:
             print(str(e), 'が発生しています')
             abort(500)
         finally:
@@ -152,6 +152,45 @@ class dbConnect:
             if cur is not None:
                 cur.close()
             if conn is not None:
+                conn.close()
+
+    @staticmethod
+    def getPersonalChannelByUserId(user_id):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "SELECT user_id FROM personal_channels WHERE user_id=%s;"
+            cur.execute(sql, (user_id,))
+            channel = cur.fetchone()
+            return channel
+        except Exception as e:
+            print(str(e), 'が発生しています')
+            abort(500)
+        finally:
+            if cur is None:
+                cur.close()
+            if conn is None:
+                conn.close()
+
+    @staticmethod
+    def createPersonalChannel(user_id, newChannelName, newChannelDescription):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "INSERT INTO personal_channels (user_id, name, description) VALUES (%s, %s, %s);"
+            cur.execute(sql, (user_id, newChannelName, newChannelDescription,))
+            conn.commit()
+        except Exception as e:
+            print(str(e), 'が発生しています')
+            abort(500)
+        finally:
+            if cur is None:
+                cur.close()
+            if conn is None:
                 conn.close()
 
     @staticmethod
@@ -184,7 +223,7 @@ class dbConnect:
             cur.execute(sql, (user_id,))
             account = cur.fetchone()
             return account
-        except Excepton as e:
+        except Exception as e:
             print(str(e), 'が発生しています')
             abort(500)
         finally:

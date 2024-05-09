@@ -121,6 +121,24 @@ def show_personal_channels():
         p_channels.reverse()
     return render_template('/personal/personal_channels.html', p_channels=p_channels, user_id=user_id)
 
+# 個人チャンネルの作成
+@app.route('/personal_channels', methods=['POST'])
+def add_personal_channels():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+
+    personal_channel = dbConnect.getPersonalChannelByUserId(user_id)
+
+    if personal_channel is None:
+        p_channel_name = request.form.get('personalChannelName')
+        p_channel_description = request.form.get('personalChannelDescription')
+        dbConnect.createPersonalChannel(user_id, p_channel_name, p_channel_description)
+        return redirect('/personal_channels')
+    else:
+        return redirect('/personal_channels')
+
+
 # 個人チャンネルの削除
 @app.route('/personal_channels/delete/<int:personal_channel_id>')
 def delete_personal_channel(personal_channel_id):
