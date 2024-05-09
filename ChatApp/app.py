@@ -134,8 +134,10 @@ def add_personal_channels():
         p_channel_name = request.form.get('personalChannelName')
         p_channel_description = request.form.get('personalChannelDescription')
         dbConnect.createPersonalChannel(user_id, p_channel_name, p_channel_description)
+        flash('個人チャンネルが正常に作成されました。', 'success')
         return redirect('/personal_channels')
     else:
+        flash('個人チャンネルは既に存在します。', 'danger')
         return redirect('/personal_channels')
 
 
@@ -148,10 +150,11 @@ def delete_personal_channel(personal_channel_id):
     else:
         personal_channel = dbConnect.getPersonalChannelById(personal_channel_id)
         if personal_channel["user_id"] != user_id:
-            flash('チャンネルは作成者のみ削除可能です')
+            flash('チャンネルは作成者のみ削除可能です', 'danger')
             return redirect ('/')
         else:
             dbConnect.deletePersonalChannel(personal_channel_id)
+            flash('個人チャンネルは正常に削除されました。', 'success')
             return redirect('/personal_channels')
 
 # アカウントページ表示
