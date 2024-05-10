@@ -53,7 +53,6 @@
                 <a href="/channels/edit/{{ channel.id }}" class="btn btn-outline-primary btn-sm">編集</a>
                 <a href="#" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal" data-href="/channels/delete/{{ channel.id }}">削除</a>
               </div>
-              <small class="text-muted">{{ channel.start_date }}</small>
             </li>
             {% endfor %}
           </ul>
