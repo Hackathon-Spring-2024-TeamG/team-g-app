@@ -231,3 +231,39 @@ class dbConnect:
                 cur.close()
             if conn is not None:
                 conn.close()
+    def deleteChannel(channel_id):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "DELETE FROM channels WHERE id=%s;"
+            cur.execute(sql, (channel_id))
+            conn.commit()
+        except Exception as e:
+            print(e + 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
+
+    def getChannelById(channel_id):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "SELECT * FROM personal_channels WHERE id=%s;"
+            cur.execute(sql, (channel_id,))
+            personal_channel = cur.fetchone()
+            return personal_channel
+        except Exception as e:
+            print(str(e), 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
