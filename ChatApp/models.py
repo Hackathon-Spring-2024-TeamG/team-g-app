@@ -31,9 +31,9 @@ class dbConnect:
             print(str(e) + 'が発生しています')
             abort(500)
         finally:
-            if cur:
+            if cur is not None:
                 cur.close()
-            if conn:
+            if conn is not None:
                 conn.close()
         return new_user_id  # 生成されたユーザーのidを返す
 
@@ -53,9 +53,9 @@ class dbConnect:
             abort(500)
         finally:
         # curとconnがNoneでないかチェックしてからcloseを呼び出す
-            if cur:
+            if cur is not None:
                 cur.close()
-            if conn:
+            if conn is not None:
                 conn.close()
 
     def getChannelAll():
@@ -161,17 +161,17 @@ class dbConnect:
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
-            sql = "SELECT user_id FROM personal_channels WHERE user_id=%s;"
+            sql = "SELECT id, user_id FROM personal_channels WHERE user_id=%s;"
             cur.execute(sql, (user_id,))
-            channel = cur.fetchone()
-            return channel
+            personal_channel = cur.fetchone()
+            return personal_channel
         except Exception as e:
             print(str(e), 'が発生しています')
             abort(500)
         finally:
-            if cur is None:
+            if cur is not None:
                 cur.close()
-            if conn is None:
+            if conn is not None:
                 conn.close()
 
     @staticmethod
@@ -188,9 +188,28 @@ class dbConnect:
             print(str(e), 'が発生しています')
             abort(500)
         finally:
-            if cur is None:
+            if cur is not None:
                 cur.close()
-            if conn is None:
+            if conn is not None:
+                conn.close()
+
+    @staticmethod
+    def updatePersonalChannel(user_id, newChannelName, newChannelDescription, p_channel_id):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "UPDATE personal_channels SET user_id=%s, name=%s, description=%s WHERE id=%s;"
+            cur.execute(sql, (user_id, newChannelName, newChannelDescription, p_channel_id,))
+            conn.commit()
+        except Exception as e:
+            print(str(e), 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
                 conn.close()
 
     @staticmethod
