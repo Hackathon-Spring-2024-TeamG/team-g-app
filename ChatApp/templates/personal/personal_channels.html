@@ -92,7 +92,28 @@
   </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
+<!-- 個人チャンネル更新時のモーダル -->
+<div id="update-confirmation-modal" class="modal fade" tabindex="-1" aria-labelledby="updateChannelModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateChannelModalLabel">個人チャンネルを編集</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+      </div>
+      <form id="updateChannelForm" class="modal-body" action="/update_personal_channel" method="POST">
+        <div class="mb-3">
+          <input type="text" id="updatePersonalChannelName" class="form-control" placeholder="個人チャンネル名" name="personalChannelName" required>
+        </div>
+        <div class="mb-3">
+          <input type="text" id="updatePersonalChannelDescription" class="form-control" placeholder="個人チャンネルの説明" name="personalChannelDescription" required>
+        </div>
+        <button type="submit" class="btn btn-primary mx-auto d-block w-50" id="update-channel-confirmation-button">更新</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 個人チャンネル削除確認時のモーダル -->
 <div id="delete-confirmation-modal" class="modal fade" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content bg-light">
