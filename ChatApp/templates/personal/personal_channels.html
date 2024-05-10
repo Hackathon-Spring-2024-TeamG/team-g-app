@@ -1,3 +1,4 @@
+
 {% extends "/base.html" %}
 
 {% block title %}個人チャンネル一覧{% endblock %}
@@ -31,10 +32,10 @@
           <a class="nav-link rounded-5" id="home-tab2" href="{{ url_for('index') }}" role="button" aria-selected="false">Home</a>
         </li>
         <li class="nav-item" role="presentation">
-          <a class="nav-link active rounded-5" id="profile-tab2" href="{{ url_for('show_personal_channels') }}" role="button" aria-selected="true">Personal</a>
+          <a class="nav-link active rounded-5" id="personal-tab2" href="{{ url_for('show_personal_channels') }}" role="button" aria-selected="true">Personal</a>
         </li>
         <li class="nav-item" role="presentation">
-          <a class="nav-link rounded-5" id="past-tab2" href="#" role="button" aria-selected="false">Archive</a>
+          <a class="nav-link rounded-5" id="archive-tab2" href="#" role="button" aria-selected="false">Archive</a>
         </li>
       </ul>
       <div class="card">
@@ -51,11 +52,8 @@
               </div>
               {% if p_channel.user_id == user_id %}
               <div>
-                <a href="/personal_channels/edit/{{ p_channel.id }}" class="btn btn-outline-primary btn-sm">編集</a>
-                <!-- <a href="/personal_channels/delete/{{ p_channel.id }}" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal">削除</a> -->
-                <!-- これはモーダルを表示するためのリンクです -->
+                <a href="#" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#update-confirmation-modal" data-href="/update_personal_channel" data-channel-id="{{ p_channel.id }}" data-channel-name="{{ p_channel.name }}" data-channel-description="{{ p_channel.description }}">編集</a>
                 <a href="#" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal" data-href="/personal_channels/delete/{{ p_channel.id }}">削除</a>
-
               </div>
               {% endif %}
             </li>
@@ -126,14 +124,11 @@
       </div>
       <div class="modal-footer">
         <a href="#" class="btn btn-outline-secondary" data-bs-dismiss="modal">キャンセル</a>
-        <!-- これは実際に削除処理を行うためのリンクです -->
         <a href="#" class="btn btn-outline-danger" id="delete-confirmation-link">削除</a>
       </div>
     </div>
   </div>
 </div>
-
-{% include 'modal/add-channel.html' %}
 
 {% endblock %}
 
@@ -144,13 +139,60 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     // モーダルを表示するリンクにイベントリスナーを設定
-    var deleteButton = document.querySelectorAll('[data-bs-toggle="modal"]');
+    let deleteButton = document.querySelectorAll('[data-bs-toggle="modal"]');
     deleteButton.forEach(function(btn) {
       btn.addEventListener('click', function () {
-        var deleteUrl = btn.getAttribute('data-href'); // data-href属性から削除URLを取得
+        let deleteUrl = btn.getAttribute('data-href'); // data-href属性から削除URLを取得
         document.getElementById('delete-confirmation-link').href = deleteUrl; // 「削除」リンクにURLを設定
       });
     });
   });
 </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    // モーダル表示イベントを捕捉
+    $('#update-confirmation-modal').on('show.bs.modal', function (event) {
+        // イベントを引き起こした要素（編集ボタンかどうか）を判定
+        let button = $(event.relatedTarget); // 編集ボタンからのイベントの場合、その要素を取得
+        let channelId = button.data('channel-id');
+        let channelName = button.data('channel-name');
+        let channelDescription = button.data('channel-description');
+
+        // もし編集ボタンからのイベントなら、そのデータでフォームを更新
+        if (channelId !== undefined) {
+            let modal = $(this);
+            modal.find('.modal-body #updatePersonalChannelName').val(channelName);
+            modal.find('.modal-body #updatePersonalChannelDescription').val(channelDescription);
+        }
+    });
+
+    // 更新ボタンがクリックされたときのイベント
+    document.getElementById('update-channel-confirmation-button').addEventListener('click', function(event) {
+        event.preventDefault(); // フォームのデフォルトの送信を防ぐ
+
+        // FormDataを使用してフォームデータを取得
+        const formData = new FormData(document.getElementById('updateChannelForm'));
+
+        // Fetch APIを使用して非同期通信
+        fetch('/update_personal_channel', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                // モーダルを閉じる
+                $('#update-confirmation-modal').modal('hide');
+                // ページをリロード
+                window.location.reload();
+            } else {
+                throw new Error('更新に失敗しました。');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+</script>
+
 {% endblock %}
