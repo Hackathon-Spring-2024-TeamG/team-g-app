@@ -25,7 +25,8 @@ def userSignup():
         (not name or not email or not password1 or not password2, '入力されていないフォームがあります'),
         (password1 != password2, '２つのパスワードの値が違います。'),
         (len(email) > 40, 'メールアドレスは40文字以内で入力してください。'),
-        (re.match("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email) is None, '正しいメールアドレスの形式で入力してください')
+        (re.match("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email) is None,
+         '正しいメールアドレスの形式で入力してください')
     ]
 
     # バリデーションチェック
@@ -90,7 +91,9 @@ def index():
         return redirect('/login')
     else:
         channels = dbConnect.getChannelAll()
-        channels.reverse()
+        if channels:  # チャンネルが空でない場合のみリバースする
+            channels = list(channels)
+            channels.reverse()
     return render_template('index.html', channels=channels, user_id=user_id)
 
 #チャンネル作成
@@ -111,6 +114,7 @@ def add_channel():
         flash('既に同じ名前のチャンネルが存在しています', 'danger')
         return redirect('/')
 
+
 # 個人チャンネル一覧ページの表示
 @app.route('/personal_channels')
 def show_personal_channels():
@@ -121,6 +125,7 @@ def show_personal_channels():
         p_channels = dbConnect.getPersonalChannelALL()
         p_channels.reverse()
     return render_template('/personal/personal_channels.html', p_channels=p_channels, user_id=user_id)
+
 
 # 個人チャンネルの作成
 @app.route('/personal_channels', methods=['POST'])
@@ -166,7 +171,7 @@ def delete_personal_channel(personal_channel_id):
         personal_channel = dbConnect.getPersonalChannelById(personal_channel_id)
         if personal_channel["user_id"] != user_id:
             flash('チャンネルは作成者のみ削除可能です', 'danger')
-            return redirect ('/')
+            return redirect('/')
         else:
             dbConnect.deletePersonalChannel(personal_channel_id)
             flash('個人チャンネルは正常に削除されました。', 'success')
@@ -181,6 +186,18 @@ def show_account():
     else:
         account = dbConnect.getUserAccount(user_id)
     return render_template('account.html', account=account, user_id=user_id)
+
+# チャンネル削除
+@app.route('/channels/delete/<int:channel_id>')
+def delete_channel(channel_id):
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect('/login')
+    else:
+        channel = dbConnect.getChannelById(channel_id)
+        dbConnect.deleteChannel(channel_id)
+        flash('チャンネルは正常に削除されました。', 'success')
+        return redirect('/')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)

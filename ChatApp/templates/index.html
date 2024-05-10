@@ -49,7 +49,10 @@
                 <h5 class="mb-1">{{ channel.name }}</h5>
                 <p class="mb-0 text-muted">{{ channel.description }}</p>
               </div>
-              <small class="text-muted">{{ channel.start_date }}</small>
+              <div class="ms-auto">
+                <a href="/channels/edit/{{ channel.id }}" class="btn btn-outline-primary btn-sm">編集</a>
+                <a href="#" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal" data-href="/channels/delete/{{ channel.id }}">削除</a>
+              </div>
             </li>
             {% endfor %}
           </ul>
@@ -86,6 +89,41 @@
   </div>
 </div>
 
+<div id="delete-confirmation-modal" class="modal fade" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmationModalLabel">チャンネルの削除確認</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+      </div>
+      <div class="modal-body">
+        <p>本当にこのチャンネルを削除してもよろしいですか？</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-outline-secondary" data-bs-dismiss="modal">キャンセル</a>
+        <!-- これは実際に削除処理を行うためのリンクです -->
+        <a href="#" class="btn btn-outline-danger" id="delete-confirmation-link">削除</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block footer_text %}チャンネル一覧だよ{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // モーダルを表示するリンクにイベントリスナーを設定
+    var deleteButton = document.querySelectorAll('[data-bs-toggle="modal"]');
+    deleteButton.forEach(function(btn) {
+      btn.addEventListener('click', function () {
+        var deleteUrl = btn.getAttribute('data-href'); // data-href属性から削除URLを取得
+        document.getElementById('delete-confirmation-link').href = deleteUrl; // 「削除」リンクにURLを設定
+      });
+    });
+  });
+</script>
+{% endblock %}
