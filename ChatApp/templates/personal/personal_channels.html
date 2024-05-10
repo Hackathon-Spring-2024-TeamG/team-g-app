@@ -1,3 +1,4 @@
+
 {% extends "/base.html" %}
 
 {% block title %}個人チャンネル一覧{% endblock %}
@@ -31,10 +32,10 @@
           <a class="nav-link rounded-5" id="home-tab2" href="{{ url_for('index') }}" role="button" aria-selected="false">Home</a>
         </li>
         <li class="nav-item" role="presentation">
-          <a class="nav-link active rounded-5" id="profile-tab2" href="{{ url_for('show_personal_channels') }}" role="button" aria-selected="true">Personal</a>
+          <a class="nav-link active rounded-5" id="personal-tab2" href="{{ url_for('show_personal_channels') }}" role="button" aria-selected="true">Personal</a>
         </li>
         <li class="nav-item" role="presentation">
-          <a class="nav-link rounded-5" id="past-tab2" href="#" role="button" aria-selected="false">Archive</a>
+          <a class="nav-link rounded-5" id="archive-tab2" href="#" role="button" aria-selected="false">Archive</a>
         </li>
       </ul>
       <div class="card">
@@ -51,11 +52,8 @@
               </div>
               {% if p_channel.user_id == user_id %}
               <div>
-                <a href="/personal_channels/edit/{{ p_channel.id }}" class="btn btn-outline-primary btn-sm">編集</a>
-                <!-- <a href="/personal_channels/delete/{{ p_channel.id }}" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal">削除</a> -->
-                <!-- これはモーダルを表示するためのリンクです -->
+                <a href="#" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#update-confirmation-modal" data-href="/update_personal_channel" data-channel-id="{{ p_channel.id }}" data-channel-name="{{ p_channel.name }}" data-channel-description="{{ p_channel.description }}">編集</a>
                 <a href="#" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal" data-href="/personal_channels/delete/{{ p_channel.id }}">削除</a>
-
               </div>
               {% endif %}
             </li>
@@ -92,7 +90,28 @@
   </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
+<!-- 個人チャンネル更新時のモーダル -->
+<div id="update-confirmation-modal" class="modal fade" tabindex="-1" aria-labelledby="updateChannelModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateChannelModalLabel">個人チャンネルを編集</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+      </div>
+      <form id="updateChannelForm" class="modal-body" action="/update_personal_channel" method="POST">
+        <div class="mb-3">
+          <input type="text" id="updatePersonalChannelName" class="form-control" placeholder="個人チャンネル名" name="personalChannelName" required>
+        </div>
+        <div class="mb-3">
+          <input type="text" id="updatePersonalChannelDescription" class="form-control" placeholder="個人チャンネルの説明" name="personalChannelDescription" required>
+        </div>
+        <button type="submit" class="btn btn-primary mx-auto d-block w-50" id="update-channel-confirmation-button">更新</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 個人チャンネル削除確認時のモーダル -->
 <div id="delete-confirmation-modal" class="modal fade" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content bg-light">
@@ -105,14 +124,11 @@
       </div>
       <div class="modal-footer">
         <a href="#" class="btn btn-outline-secondary" data-bs-dismiss="modal">キャンセル</a>
-        <!-- これは実際に削除処理を行うためのリンクです -->
         <a href="#" class="btn btn-outline-danger" id="delete-confirmation-link">削除</a>
       </div>
     </div>
   </div>
 </div>
-
-{% include 'modal/add-channel.html' %}
 
 {% endblock %}
 
@@ -120,16 +136,8 @@
 
 {% block script %}
 {{ super() }}
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // モーダルを表示するリンクにイベントリスナーを設定
-    var deleteButton = document.querySelectorAll('[data-bs-toggle="modal"]');
-    deleteButton.forEach(function(btn) {
-      btn.addEventListener('click', function () {
-        var deleteUrl = btn.getAttribute('data-href'); // data-href属性から削除URLを取得
-        document.getElementById('delete-confirmation-link').href = deleteUrl; // 「削除」リンクにURLを設定
-      });
-    });
-  });
-</script>
+<script src="{{ url_for('static', filename='js/PersonalChannels/setupDeleteConfirmationModal.js') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/PersonalChannels/personalChannelUpdateModal.js') }}"></script>
+
 {% endblock %}

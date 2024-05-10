@@ -141,6 +141,20 @@ def add_personal_channels():
         flash('個人チャンネルは既に存在します。', 'danger')
         return redirect('/personal_channels')
 
+# 個人チャンネルの更新
+@app.route('/update_personal_channel', methods=['POST'])
+def update_personal_channel():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+
+    personal_channel = dbConnect.getPersonalChannelByUserId(user_id)
+    p_channel_id = personal_channel['id']
+    p_channel_name = request.form.get('personalChannelName')
+    p_channel_description = request.form.get('personalChannelDescription')
+
+    dbConnect.updatePersonalChannel(user_id, p_channel_name, p_channel_description, p_channel_id)
+    return redirect('/personal_channels')
 
 # 個人チャンネルの削除
 @app.route('/personal_channels/delete/<int:personal_channel_id>')
