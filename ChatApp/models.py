@@ -286,3 +286,21 @@ class dbConnect:
                 cur.close()
             if conn is not None:
                 conn.close()
+
+    def updateChannel(newChannelName, newChannelDescription, channel_id):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "UPDATE channels SET name=%s, description=%s WHERE id=%s;"
+            cur.execute(sql, (newChannelName, newChannelDescription, channel_id,))
+            conn.commit()
+        except Exception as e:
+            print(str(e), 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
