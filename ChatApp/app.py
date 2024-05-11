@@ -199,5 +199,18 @@ def delete_channel(channel_id):
         flash('チャンネルは正常に削除されました。', 'success')
         return redirect('/')
 
+# チャンネル更新
+@app.route('/update_channel/<int:channel_id>', methods=['POST'])
+def update_channel(channel_id):
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+    else:
+        channel_name = request.form.get('ChannelName')
+        channel_description = request.form.get('ChannelDescription')
+        dbConnect.updateChannel(channel_name, channel_description, channel_id)
+        flash('チャンネルは正常に変更されました。', 'success')
+        return redirect('/')
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
