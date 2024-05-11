@@ -69,7 +69,7 @@ CREATE TABLE personal_channels (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-INSERT INTO users (name, email, crypted_password, is_admin) VALUES ('admin', 'adadminmin@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 1);
+INSERT INTO users (name, email, crypted_password, is_admin) VALUES ('admin', 'admin@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 1);
 INSERT INTO users (name, email, crypted_password, self_introduction) VALUES ('chiikawa', 'chiikawa@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 'フ！');
 INSERT INTO channels (description, name, start_date) VALUES ('superぼっち部屋へようこそ', 'superぼっち部屋', '2024-04-27');
 INSERT INTO messages (user_id, channel_id, message) VALUES (1, 1, 'ヤヤーンパパヒュパヒュパ');

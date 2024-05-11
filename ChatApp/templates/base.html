@@ -40,7 +40,11 @@
 
         <div class="dropdown text-end">
           <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if session.is_admin %}
+            <img src="/static/img/user_admin.png" alt="デフォルトユーザー画像" width="32" height="32" class="rounded-circle">
+            {% elif not session.is_admin %}
             <img src="/static/img/user_default02.png" alt="デフォルトユーザー画像" width="32" height="32" class="rounded-circle">
+            {% endif %}
           </a>
           <ul class="dropdown-menu text-small">
             <li><a class="dropdown-item" href="{{ url_for('show_account') }}">アカウント設定</a></li>
