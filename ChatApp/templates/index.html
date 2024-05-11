@@ -50,8 +50,10 @@
                 <p class="mb-0 text-muted">{{ channel.description }}</p>
               </div>
               <div class="ms-auto">
+                {% if session.is_admin %}
                 <a href="/channels/edit/{{ channel.id }}" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#update-confirmation-modal" data-channel-id="{{ channel.id }}" data-channel-name="{{ channel.name }}" data-channel-description="{{ channel.description }}">編集</a>
                 <a href="#" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal" data-href="/channels/delete/{{ channel.id }}">削除</a>
+                {% endif%}
               </div>
             </li>
             {% endfor %}
@@ -59,7 +61,9 @@
         </div>
       </div>
       <div class="text-end">
+        {% if session.is_admin %}
         <button id="add-channel-button" class="my-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-channel-modal">チャンネルを追加する</button>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -69,6 +73,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content bg-light">
       <div class="modal-header">
+
         <h5 class="modal-title" id="addChannelModalLabel">チャンネルを追加</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる">
         </button>
