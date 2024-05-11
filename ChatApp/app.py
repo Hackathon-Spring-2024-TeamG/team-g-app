@@ -25,8 +25,7 @@ def userSignup():
         (not name or not email or not password1 or not password2, '入力されていないフォームがあります'),
         (password1 != password2, '２つのパスワードの値が違います。'),
         (len(email) > 40, 'メールアドレスは40文字以内で入力してください。'),
-        (re.match("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email) is None,
-         '正しいメールアドレスの形式で入力してください')
+        (re.match("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email) is None, '正しいメールアドレスの形式で入力してください')
     ]
 
     # バリデーションチェック
@@ -117,6 +116,30 @@ def add_channel():
         flash('既に同じ名前のチャンネルが存在しています', 'danger')
         return redirect('/')
 
+# チャンネル更新
+@app.route('/update_channel/<int:channel_id>', methods=['POST'])
+def update_channel(channel_id):
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+    else:
+        channel_name = request.form.get('ChannelName')
+        channel_description = request.form.get('ChannelDescription')
+        dbConnect.updateChannel(channel_name, channel_description, channel_id)
+        flash('チャンネルは正常に変更されました。', 'success')
+        return redirect('/')
+
+# チャンネル削除
+@app.route('/channels/delete/<int:channel_id>')
+def delete_channel(channel_id):
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect('/login')
+    else:
+        channel = dbConnect.getChannelById(channel_id)
+        dbConnect.deleteChannel(channel_id)
+        flash('チャンネルは正常に削除されました。', 'success')
+        return redirect('/')
 
 # 個人チャンネル一覧ページの表示
 @app.route('/personal_channels')
@@ -190,30 +213,6 @@ def show_account():
         account = dbConnect.getUserAccount(user_id)
     return render_template('account.html', account=account, user_id=user_id)
 
-# チャンネル削除
-@app.route('/channels/delete/<int:channel_id>')
-def delete_channel(channel_id):
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect('/login')
-    else:
-        channel = dbConnect.getChannelById(channel_id)
-        dbConnect.deleteChannel(channel_id)
-        flash('チャンネルは正常に削除されました。', 'success')
-        return redirect('/')
-
-# チャンネル更新
-@app.route('/update_channel/<int:channel_id>', methods=['POST'])
-def update_channel(channel_id):
-    user_id = session.get('user_id')
-    if user_id is None:
-        return redirect('/login')
-    else:
-        channel_name = request.form.get('ChannelName')
-        channel_description = request.form.get('ChannelDescription')
-        dbConnect.updateChannel(channel_name, channel_description, channel_id)
-        flash('チャンネルは正常に変更されました。', 'success')
-        return redirect('/')
 
 @app.route('/channels/<int:channel_id>', methods=['GET'])
 def channel_detail(channel_id):

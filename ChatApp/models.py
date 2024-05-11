@@ -117,6 +117,104 @@ class dbConnect:
                 conn.close()
         return new_channel_id
 
+    def deleteChannel(channel_id):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "DELETE FROM channels WHERE id=%s;"
+            cur.execute(sql, (channel_id))
+            conn.commit()
+        except Exception as e:
+            print(e + 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
+
+    def getChannelById(channel_id):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "SELECT * FROM personal_channels WHERE id=%s;"
+            cur.execute(sql, (channel_id,))
+            personal_channel = cur.fetchone()
+            return personal_channel
+        except Exception as e:
+            print(str(e), 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
+
+
+    def updateChannel(newChannelName, newChannelDescription, channel_id):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "UPDATE channels SET name=%s, description=%s WHERE id=%s;"
+            cur.execute(sql, (newChannelName, newChannelDescription, channel_id,))
+            conn.commit()
+        except Exception as e:
+            print(str(e), 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
+
+    def getMessageAll(channel_id):
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = """
+                        SELECT m.id, u.name AS user_name, m.message, m.created_at
+                        FROM messages m
+                        JOIN users u ON m.user_id = u.id
+                        WHERE m.channel_id = %s
+                        ORDER BY m.created_at;
+                    """
+            cur.execute(sql, (channel_id,))
+            messages = cur.fetchall()
+            return messages
+        except Exception as e:
+            print(e + 'が発生しています')
+            abort(500)
+        finally:
+            cur.close()
+
+    def addMessage(user_id, channel_id, message):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "INSERT INTO messages (user_id, channel_id, message) VALUES (%s, %s, %s)"
+            values = (user_id, channel_id, message)
+            cur.execute(sql, values)
+            print(f"SQL: {sql}")
+            print(f"Values: {values}")
+            conn.commit()
+        except Exception as e:
+            print(str(e) + 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
+
+# -----------------------------ここから下は個人チャンネルに関連する関数-----------------------------------
     @staticmethod
     def getPersonalChannelALL():
         conn = None
@@ -234,6 +332,7 @@ class dbConnect:
             if conn is not None:
                 conn.close()
 
+# -----------------------------ここから下はアカウント機能関連-----------------------------------
     @staticmethod
     def getUserAccount(user_id):
         conn = None
@@ -247,101 +346,6 @@ class dbConnect:
             return account
         except Exception as e:
             print(str(e), 'が発生しています')
-            abort(500)
-        finally:
-            if cur is not None:
-                cur.close()
-            if conn is not None:
-                conn.close()
-    def deleteChannel(channel_id):
-        conn = None
-        cur = None
-        try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "DELETE FROM channels WHERE id=%s;"
-            cur.execute(sql, (channel_id))
-            conn.commit()
-        except Exception as e:
-            print(e + 'が発生しています')
-            abort(500)
-        finally:
-            if cur is not None:
-                cur.close()
-            if conn is not None:
-                conn.close()
-
-    def getChannelById(channel_id):
-        conn = None
-        cur = None
-        try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "SELECT * FROM personal_channels WHERE id=%s;"
-            cur.execute(sql, (channel_id,))
-            personal_channel = cur.fetchone()
-            return personal_channel
-        except Exception as e:
-            print(str(e), 'が発生しています')
-            abort(500)
-        finally:
-            if cur is not None:
-                cur.close()
-            if conn is not None:
-                conn.close()
-
-    def updateChannel(newChannelName, newChannelDescription, channel_id):
-        conn = None
-        cur = None
-        try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "UPDATE channels SET name=%s, description=%s WHERE id=%s;"
-            cur.execute(sql, (newChannelName, newChannelDescription, channel_id,))
-            conn.commit()
-        except Exception as e:
-            print(str(e), 'が発生しています')
-            abort(500)
-        finally:
-            if cur is not None:
-                cur.close()
-            if conn is not None:
-                conn.close()
-
-    def getMessageAll(channel_id):
-        try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = """
-                        SELECT m.id, u.name AS user_name, m.message, m.created_at
-                        FROM messages m
-                        JOIN users u ON m.user_id = u.id
-                        WHERE m.channel_id = %s
-                        ORDER BY m.created_at;
-                    """
-            cur.execute(sql, (channel_id,))
-            messages = cur.fetchall()
-            return messages
-        except Exception as e:
-            print(e + 'が発生しています')
-            abort(500)
-        finally:
-            cur.close()
-
-    def addMessage(user_id, channel_id, message):
-        conn = None
-        cur = None
-        try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "INSERT INTO messages (user_id, channel_id, message) VALUES (%s, %s, %s)"
-            values = (user_id, channel_id, message)
-            cur.execute(sql, values)
-            print(f"SQL: {sql}")
-            print(f"Values: {values}")
-            conn.commit()
-        except Exception as e:
-            print(str(e) + 'が発生しています')
             abort(500)
         finally:
             if cur is not None:
