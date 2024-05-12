@@ -134,6 +134,16 @@
   </div>
 </div>
 
+<div class="card-footer">
+  <nav aria-label="チャンネルナビゲーション">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" id="prev"><a class="page-link" href="#">prev</a></li>
+      
+      <!--　ページネーションリンクはここに動的に挿入される-->
+      <li class="page-item" id="next"><a class="page-link" href="#">next</a></li>
+    </ul>
+  </nav>
+</div>
 {% endblock %}
 
 {% block footer_text %}チャンネル一覧だよ{% endblock %}
@@ -141,6 +151,7 @@
 {% block script %}
 {{ super() }}
 <script src="{{ url_for('static', filename='js/channelDeleteModal.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='js/Channels/ChannelUpdateModal.js') }}"></script>
 {% endblock %}

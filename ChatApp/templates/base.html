@@ -19,11 +19,42 @@
       font-size: 14px;
       color: #6c757d;
       position: fixed;
+      z-index: 1000;       /* 高いz-indexを設定してフッターを前面に */
       left: 0;
       bottom: 0;
       width: 100%;
       text-align: center;
     }
+    
+    .pagination-container {
+      position: relative;
+      z-index: 10;  /* フッターより低い値を設定 */
+      height: 500px; /* 高さを固定 */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; /* コンテンツを垂直方向に均等に配置 */
+    }
+    .list-group {
+    
+    
+    }
+    .card-body {
+      min-height: 300px; /* チャンネルが少ない時も一定の高さを保持 */
+      max-height: 300px; /* チャンネルが多い時に高さを限定 */
+      overflow-y: auto; /* 内容がオーバーフローしたらスクロールバーを表示 */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* コンテンツを上端から始める */
+    }
+
+    .pagination {
+      margin: 0; /* 余分なマージンを取り除く */
+    }
+
+    .card-footer {
+      margin-top: auto; /* フッターを常に下部に固定 */
+    }
+  
   </style>
 </head>
 <body>

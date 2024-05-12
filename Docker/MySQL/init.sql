@@ -71,7 +71,16 @@ CREATE TABLE personal_channels (
 
 INSERT INTO users (name, email, crypted_password, is_admin) VALUES ('admin', 'admin@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 1);
 INSERT INTO users (name, email, crypted_password, self_introduction) VALUES ('chiikawa', 'chiikawa@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 'フ！');
-INSERT INTO channels (description, name, start_date) VALUES ('superぼっち部屋へようこそ', 'superぼっち部屋', '2024-04-27');
+INSERT INTO channels (description, name, start_date) VALUES ('4/1Wの投稿はこちらへ', '4/1W', '2024-04-06');
+INSERT INTO channels (description, name, start_date) VALUES ('4/2Wの投稿はこちらへ', '4/2W', '2024-04-13');
+INSERT INTO channels (description, name, start_date) VALUES ('4/3Wの投稿はこちらへ', '4/3W', '2024-04-20');
+INSERT INTO channels (description, name, start_date) VALUES ('4/4Wの投稿はこちらへ', '4/4W', '2024-04-27');
+INSERT INTO channels (description, name, start_date) VALUES ('5/1Wの投稿はこちらへ', '5/1W', '2024-05-01');
+INSERT INTO channels (description, name, start_date) VALUES ('5/2Wの投稿はこちらへ', '5/2W', '2024-05-05');
+INSERT INTO channels (description, name, start_date) VALUES ('5/3Wの投稿はこちらへ', '5/3W', '2024-05-12');
+INSERT INTO channels (description, name, start_date) VALUES ('5/4Wの投稿はこちらへ', '5/4W', '2024-05-19');
+INSERT INTO channels (description, name, start_date) VALUES ('5/5Wの投稿はこちらへ', '5/5W', '2024-05-26');
+INSERT INTO channels (description, name, start_date) VALUES ('6/1Wの投稿はこちらへ', '6/1W', '2024-06-02');
 INSERT INTO messages (user_id, channel_id, message) VALUES (1, 1, 'ヤヤーンパパヒュパヒュパ');
 INSERT INTO badge_types (name) VALUES ('GOLD'), ('SILVER'), ('BRONZE');
 INSERT INTO badges (user_id, message_id, badge_type_id, created_by) VALUES (1, 1, 2, NULL);
