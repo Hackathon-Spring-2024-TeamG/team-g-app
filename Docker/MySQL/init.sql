@@ -84,4 +84,4 @@ INSERT INTO channels (description, name, start_date) VALUES ('6/1Wの投稿は�
 INSERT INTO messages (user_id, channel_id, message) VALUES (1, 1, 'ヤヤーンパパヒュパヒュパ');
 INSERT INTO badge_types (name) VALUES ('GOLD'), ('SILVER'), ('BRONZE');
 INSERT INTO badges (user_id, message_id, badge_type_id, created_by) VALUES (1, 1, 2, NULL);
-INSERT INTO personal_channels (user_id, name, description) VALUES (1, 'virtual_chiikawa', '草むしり検定5級目指して頑張ります！');
+INSERT INTO personal_channels (user_id, name, description) VALUES (2, 'virtual_chiikawa', '草むしり検定5級目指して頑張ります！');
