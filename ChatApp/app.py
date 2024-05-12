@@ -54,7 +54,6 @@ def login():
     return render_template('registration/login.html')
 
 # ログイン処理
-# ログイン処理
 @app.route('/login', methods=['POST'])
 def userLogin():
     email = request.form.get('email')
@@ -69,15 +68,21 @@ def userLogin():
         flash('このユーザーは存在しません', 'danger')
         return redirect('/login')
 
-    if bcrypt.check_password_hash(user['crypted_password'], password):
-        session['user_id'] = user['id']
-        if email == 'admin@example.com':
-            session['is_admin'] = True  # 管理者フラグを設定
-            print('管理者です！')
-        return redirect('/')
-    else:
+    # bcrypt.check_password_hash関数を使って、DBから取得した暗号化済みのパスワードとユーザーが入力したパスワードを暗号化して比較
+    if not bcrypt.check_password_hash(user['crypted_password'], password):
         flash('パスワードが間違っています', 'danger')
         return redirect('/login')
+
+    session['user_id'] = user['id']
+
+    if user['is_admin'] == 1:
+        session['is_admin'] = True  # 管理者フラグを設定
+        flash('管理者としてログインしました', 'info')
+    else:
+        flash('ログイン成功しました', 'success')
+
+    return redirect('/')
+
 
 # ログアウト
 @app.route('/logout')
