@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}チャットルーム{% endblock %}
+  .chat-container {
+      display: flex;
+      flex-direction: column; /* 子要素を縦方向に並べる */
+      justify-content: space-between; /* 余白を均等に分配 */
+      height: 100vh; /* ビューポートの高さと同じに設定 */
+  }
+  #chat-window {
+      flex-grow: 1; /* 残りのスペースを全て使う */
+      overflow: auto; /* スクロール可能にする */
+  }
+  .card-footer {
+      min-height: 50px; /* メッセージ入力部分の高さ */
+  }
+{% block body %}
+<div class="container mt-3 mb-3">
+  <div class="row col-12 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <span>name：{{ personal_channel.name }}</span><br>
+        <span>description：{{ personal_channel.description }}</span>
+      </div>
+      <div class="chat-container">
+        <div class="card-body" id="chat-window">
+          <!-- チャットメッセージがここに挿入されます -->
+        </div>
+        <div class="card-footer">
+          <form id="chat-form">
+            <div class="input-group">
+              <input type="text" class="form-control chat-input" placeholder="メッセージを入力" id="chat-message">
+              <button class="btn btn-primary" type="submit">送信</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% block footer %}{% endblock %}
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+{% endblock %}

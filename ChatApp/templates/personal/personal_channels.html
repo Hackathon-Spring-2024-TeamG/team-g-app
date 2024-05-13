@@ -44,16 +44,16 @@
         </div>
         <div class="card-body">
           <ul class="list-group list-group-flush">
-            {% for p_channel in p_channels %}
+            {% for personal_channel in personal_channels %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <div>
-                <h5 class="mb-1">{{ p_channel.name }}</h5>
-                <p class="mb-0 text-muted">{{ p_channel.description }}</p>
+                <h5 class="mb-1">{{ personal_channel.name }}</h5>
+                <p class="mb-0 text-muted">{{ personal_channel.description }}</p>
               </div>
-              {% if p_channel.user_id == user_id %}
+              {% if personal_channel.user_id == user_id %}
               <div>
-                <a href="#" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#update-confirmation-modal" data-href="/update_personal_channel" data-channel-id="{{ p_channel.id }}" data-channel-name="{{ p_channel.name }}" data-channel-description="{{ p_channel.description }}">編集</a>
-                <a href="#" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal" data-href="/personal_channels/delete/{{ p_channel.id }}">削除</a>
+                <a href="#" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#update-confirmation-modal" data-href="/update_personal_channel" data-channel-id="{{ personal_channel.id }}" data-channel-name="{{ personal_channel.name }}" data-channel-description="{{ personal_channel.description }}">編集</a>
+                <a href="#" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal" data-href="/personal_channels/delete/{{ personal_channel.id }}">削除</a>
               </div>
               {% endif %}
             </li>
