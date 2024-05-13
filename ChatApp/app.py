@@ -154,7 +154,6 @@ def show_personal_channels():
         return redirect('/login')
     else:
         personal_channels = dbConnect.getPersonalChannelAll()
-        print(personal_channels)
         personal_channels.reverse()
     return render_template('/personal/personal_channels.html', personal_channels=personal_channels, user_id=user_id)
 
@@ -193,6 +192,21 @@ def update_personal_channel():
     dbConnect.updatePersonalChannel(user_id, personal_channel_name, personal_channel_description, personal_channel_id)
     return redirect('/personal_channels')
 
+# 個人チャンネルの更新（詳細ページ内）
+@app.route('/update_personal_detail', methods=['POST'])
+def update_personal_detail():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+
+    personal_channel = dbConnect.getPersonalChannelByUserId(user_id)
+    personal_channel_id = personal_channel['id']
+    personal_channel_name = request.form.get('personalChannelName')
+    personal_channel_description = request.form.get('personalChannelDescription')
+
+    dbConnect.updatePersonalChannel(user_id, personal_channel_name, personal_channel_description, personal_channel_id)
+    return redirect('/personal_channels/detail/{personal_channel_id}'.format(personal_channel_id=personal_channel_id))
+
 # 個人チャンネルの削除
 @app.route('/personal_channels/delete/<int:personal_channel_id>')
 def delete_personal_channel(personal_channel_id):
@@ -211,15 +225,31 @@ def delete_personal_channel(personal_channel_id):
 
 # 個人チャンネル詳細ページの表示
 @app.route('/personal_channels/detail/<int:personal_channel_id>')
-def detail(personal_channel_id):
+def personal_detail(personal_channel_id):
     user_id = session.get("user_id")
     if user_id is None:
         return redirect('/login')
+
     personal_channel_id = personal_channel_id
     personal_channel = dbConnect.getPersonalChannelById(personal_channel_id)
     personal_messages = dbConnect.getPersonalMessageAll(personal_channel_id)
 
     return  render_template('personal/detail.html', personal_messages=personal_messages, personal_channel=personal_channel, user_id=user_id)
+
+# メッセージの投稿（個人チャンネル詳細ページ内）
+@app.route('/personal_message', methods=['POST'])
+def add_personal_message():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+
+    personal_message = request.form.get('personal_message')
+    personal_channel_id = request.form.get('personal_channel_id')
+
+    if personal_message:
+        dbConnect.createPersonalMessage(user_id, personal_channel_id, personal_message)
+
+    return redirect('/personal_channels/detail/{personal_channel_id}'.format(personal_channel_id=personal_channel_id))
 
 # アカウントページ表示
 @app.route('/account')

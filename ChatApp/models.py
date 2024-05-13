@@ -339,10 +339,30 @@ class dbConnect:
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
-            sql = "SELECT pm.id, u.id, u.name, pm.message FROM personal_messages AS pm INNER JOIN users AS u ON pm.user_id = u.id WHERE channel_id = %s;"
+            sql = "SELECT pm.id, u.id AS user_id, u.name, pm.message FROM personal_messages AS pm INNER JOIN users AS u ON pm.user_id = u.id WHERE channel_id = %s ORDER BY pm.created_at ASC;"
             cur.execute(sql, (personal_channel_id,))
-            p_messages = cur.fetchall()
-            return p_messages
+            personal_messages = cur.fetchall()
+            print(personal_messages)
+            return personal_messages
+        except Exception as e:
+            print(str(e), 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
+
+    @staticmethod
+    def createPersonalMessage(user_id, personal_channel_id, personal_message):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "INSERT INTO personal_messages(user_id, channel_id, message) VALUES(%s, %s, %s);"
+            cur.execute(sql, (user_id, personal_channel_id, personal_message,))
+            conn.commit()
         except Exception as e:
             print(str(e), 'が発生しています')
             abort(500)

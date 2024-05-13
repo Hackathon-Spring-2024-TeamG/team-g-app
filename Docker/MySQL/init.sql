@@ -95,4 +95,4 @@ INSERT INTO messages (user_id, channel_id, message) VALUES (2, 1, 'ヤヤーン�
 INSERT INTO badge_types (name) VALUES ('GOLD'), ('SILVER'), ('BRONZE');
 INSERT INTO badges (user_id, associable_type, associable_id, badge_type_id) VALUES (2, 'GeneralChannelMessage', 1, 2);
 INSERT INTO personal_channels (user_id, name, description) VALUES (2, 'virtual_chiikawa', '草むしり検定5級目指して頑張ります！');
-INSERT INTO personal_messages (user_id, channel_id, message) VALUES (2, 1, 'ヤヤーンパパヒュパヒュパ2');
+INSERT INTO personal_messages (user_id, channel_id, message) VALUES (2, 1, 'Noneだ、もう朝かと…');
