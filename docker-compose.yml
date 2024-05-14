@@ -1,66 +1,97 @@
 # docker-composeのバージョンを指定
 version: "3.9"
 
-# db(MySQL),app(Flask)のコンテナを作成
 services:
-  db:
-    # コンテナ名をmysqlに設定
-    container_name: MySQL_G
-    # MySQLのDockerfileをビルドする
-    build:
-      # ビルドコンテキストはカレントディレクトリ
-      context: .
-      dockerfile: Docker/MySQL/Dockerfile
-    # M1チップでも動くように
-    # Intel Macの場合あってもなくても動く
-    platform: linux/x86_64
-    # DBのボリュームを指定
-    # ローカルの/data/dbをコンテナの/var/lib/mysqlにマウントする
-    volumes:
-      - mysql_data:/var/lib/mysql
-    # コンテナ内の環境変数を設定
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=chatapp
-      - MYSQL_USER=testuser
-      - MYSQL_PASSWORD=testuser
-    # DBのコンテナのヘルスチェックを行う
-    # mysqladmin(MySQLサーバーの管理を行うクライアントを使ってDBコンテナ自身(127.0.0.1)にpingを送ってヘルスチェックを行う
-    healthcheck:
-      test: mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD
-      # ヘルスチェックのインターバルは10秒
-      interval: 10s
-      # タイムアウト時間は10秒
-      timeout: 10s
-      # リトライ回数は3回
-      retries: 3
-      # ヘルスチェックが失敗しても無視する時間は30秒
-      start_period: 30s
+# # db(MySQL)のコンテナを作成
+#   db:
+#     # コンテナ名をmysqlに設定
+#     container_name: MySQL
+#     # MySQLのdockerfileをビルドする
+#     build:
+#       # ビルドコンテキストはカレントディレクトリ
+#       context: .
+#       dockerfile: Docker/MySQL/Dockerfile
+#     # M1チップでも動くように、かつ　Intel Macの場合であってもなくても動く
+#     platform: linux/x86_64
+#     # DBのボリュームを指定
+#     # ローカルの/data/dbをコンテナの/var/lib/mysqlにマウントする
+#     volumes:
+#       - mysql_data:/var/lib/mysql
+#     # コンテナ内の環境変数を設定
+#     environment:
+#       - MYSQL_ROOT_PASSWORD=root
+#       - MYSQL_DATABASE=chatapp
+#       - MYSQL_USER=testuser
+#       - MYSQL_PASSWORD=testuser
+#     # DBコンテナのヘルスチェックをする
+#     # mysqladmin（MySQLサーバ管理を行うクライアント）でDBコンテナ自身(127.0.0.1)にpingを送ってヘルスチェックする
+#     healthcheck:
+#       test: mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD
+#       # ヘルスチェックのインターバルは10s
+#       interval: 10s
+#       # タイムアウト時間は10s
+#       timeout: 10s
+#       # リトライ回数は3回
+#       retries: 3
+#       # ヘルスチェックが失敗しても無視する時間は30s
+#       start_period: 30s
+
+# app(Flask)のコンテナを作成
 
   app:
     # コンテナ名をFlaskに設定
-    container_name: Flask_G
-    # FlaskのDockerfileをビルドする
+    container_name: Flask
+    # FlaskのDockerファイルをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
       context: .
       dockerfile: Docker/Flask/Dockerfile
     # ボリュームを指定
-    # ローカルのカレントディレクトリをコンテナの/codeにマウントする
+    # ローカルのカレンディレクトリをコンテナの/codeにマウントする
     volumes:
-      - ./ChatApp:/code
-    # ローカルの5000番ポートとコンテナの5000番ポートをつなぐ
-    #
-    ports:
-      - "5001:5000"
+    
+      - ./Chatapp:/code
+      - ./Docker/Flask/:/code/Docker/Flask/
+      - uwsgi-socket:/tmp/
+      - uwsgi-logs:/var/log/uwsgi/
+    # ローカルの80番ポートとコンテナの5000番ポートをつなぐ
+    #ports:
+    #  - "5000:5000"
+    # nginxのアクセスを受ける
+    expose:
+      - 5000
     # コマンドを実行
-    # command:  bash -c "python app.py"
-    command: bash -c "FLASK_APP=app.py FLASK_ENV=development flask run --host=0.0.0.0 --port=5000"
+    #command: uwsgi --ini /code/Docker/Flask/uwsgi.ini
+
     # 先にdbを起動してからappを起動する
     depends_on:
-      db:
-        # dbのヘルスチェックが終わってからappを起動させる
-        condition: service_healthy
+      # db:
+      #   # dbのヘルスチェックが終わってからappを起動させる
+      #   condition: service_healthy
+      - nginx
+
+# nginxコンテナの作成
+  nginx:
+    # コンテナ名をnginxに設定
+    container_name: Nginx
+    # nginxのDockerファイルをビルドする
+    build:
+    # ビルドコンテキストはカレントディレクトリ
+      context: .
+      dockerfile: Docker/Nginx/Dockerfile
+    # appのportsをコメントアウトし、nginxで受ける
+    ports:
+      - "80:80" 
+    # depends_on:
+    #   - app
+    volumes:
+      - ./Docker/Nginx/nginx.conf:/etc/nginx/conf.d/defaut.conf
+      - uwsgi-socket:/tmp/
+      - nginx-logs:/var/log/nginx
+
 
 volumes:
-  mysql_data:
+#  mysql_data:        
+  uwsgi-socket:
+  uwsgi-logs:
+  nginx-logs:
