@@ -149,7 +149,7 @@ def delete_channel(channel_id):
 # 個人チャンネル一覧ページの表示
 @app.route('/personal_channels')
 def show_personal_channels():
-    user_id = session.get("user_id")
+    user_id = session.get('user_id')
     if user_id is None:
         return redirect('/login')
     else:
@@ -210,7 +210,7 @@ def update_personal_detail():
 # 個人チャンネルの削除
 @app.route('/personal_channels/delete/<int:personal_channel_id>')
 def delete_personal_channel(personal_channel_id):
-    user_id = session.get("user_id")
+    user_id = session.get('user_id')
     if user_id is None:
         return redirect('/login')
     else:
@@ -226,7 +226,7 @@ def delete_personal_channel(personal_channel_id):
 # 個人チャンネル詳細ページの表示
 @app.route('/personal_channels/detail/<int:personal_channel_id>')
 def personal_detail(personal_channel_id):
-    user_id = session.get("user_id")
+    user_id = session.get('user_id')
     if user_id is None:
         return redirect('/login')
 
@@ -249,12 +249,29 @@ def add_personal_message():
     if personal_message:
         dbConnect.createPersonalMessage(user_id, personal_channel_id, personal_message)
 
-    return redirect('/personal_channels/detail/{personal_channel_id}'.format(personal_channel_id=personal_channel_id))
+    return redirect(f'/personal_channels/detail/{personal_channel_id}')
+
+# 個人メッセージの削除
+@app.route('/delete_personal_message', methods=['POST'])
+def delete_personal_message():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+
+    personal_message_id = request.form.get('personal_message_id')
+    print(personal_message_id)
+    personal_channel_id = request.form.get('personal_channel_id')
+    print(personal_channel_id)
+
+    if personal_message_id:
+        dbConnect.deletePersonalMessage(personal_message_id)
+
+    return redirect(f'personal_channels/detail/{personal_channel_id}')
 
 # アカウントページ表示
 @app.route('/account')
 def show_account():
-    user_id = session.get("user_id")
+    user_id = session.get('user_id')
     if user_id is None:
         return redirect('/login')
     else:

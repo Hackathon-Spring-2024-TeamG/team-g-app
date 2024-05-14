@@ -372,6 +372,26 @@ class dbConnect:
             if conn is not None:
                 conn.close()
 
+    @staticmethod
+    def deletePersonalMessage(personal_message_id):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "DELETE FROM personal_messages WHERE id=%s;"
+            cur.execute(sql, (personal_message_id,))
+            conn.commit()
+        except Exception as e:
+            print(str(e), 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
+
+
 # -----------------------------ここから下はアカウント機能関連-----------------------------------
     @staticmethod
     def getUserAccount(user_id):

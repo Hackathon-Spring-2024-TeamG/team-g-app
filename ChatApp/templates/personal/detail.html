@@ -10,7 +10,6 @@
     .container {
       display: flex;
       flex-direction: column;
-      padding: 0 !important; /* コンテナのデフォルトのパディングを無効化 */
     }
     .card {
       flex-grow: 1;
@@ -35,13 +34,29 @@
       flex-grow: 1;
       overflow-y: auto; /* 必要に応じてスクロールバーを表示 */
     }
+    .message-box {
+      position: relative;
+      max-width: 60%; /* メッセージボックスの最大幅を設定 */
+    }
+
+    .message-box::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      right: -3px;
+      bottom: -3px;
+      border: 1px solid #414141d6;
+      border-radius: inherit;
+      z-index: 0;
+    }
 
   </style>
 {% endblock %}
 {% block body %}
-<div class="container mt-3 mb-3">
+<div class="container mt-3 mb-4" style="padding-top: 78px;">
   <div class="row col-12 mx-auto">
-    <div class="card">
+    <div class="card mb-3">
       <div class="card-header d-flex align-items-center me-1">
         <div>
           <h5 class="mb-0 text-secondary">Name: <span class="text-primary">{{ personal_channel.name }}</span></h5>
@@ -53,24 +68,31 @@
       </div>
       <div class="chat-container">
         <div class="card-body" id="chat-window">
-          <!-- チャットメッセージがここに挿入されます -->
           {% for personal_message in personal_messages %}
-            {% if personal_message.user_id == user_id %}
-              <!-- ログインユーザーのメッセージ -->
-              <div class="d-flex justify-content-end mb-2">
-                <div class="bg-primary text-white rounded p-2">
-                  {{ personal_message.message }}
-                </div>
-              </div>
-            {% else %}
-              <!-- 他のユーザーのメッセージ -->
-              <div class="d-flex justify-content-start mb-2">
-                <div class="bg-secondary text-white rounded p-2">
-                  {{ personal_message.message }}
-                </div>
-              </div>
-            {% endif %}
-          {% endfor %}
+          {% if personal_message.user_id == user_id %}
+          <!-- ログインユーザーのメッセージ -->
+          <div class="d-flex justify-content-end mb-3 align-items-center">
+            <div class="bg-primary text-white rounded p-2 shadow-sm message-box" style="position: relative; max-width: 60%;">
+              {{ personal_message.message }}
+            </div>
+            <form action="/delete_personal_message" method="POST" class="d-inline">
+              <input type="hidden" name="personal_message_id" value="{{ personal_message.id }}">
+              <input type="hidden" name="personal_channel_id" value="{{ personal_channel.id }}">
+              <button type="submit" class="btn btn-link p-0 ms-2">
+                <i class="fas fa-trash-alt text-secondary"></i>
+              </button>
+            </form>
+          </div>
+        {% else %}
+          <!-- 他のユーザーのメッセージ -->
+          <div class="d-flex justify-content-start mb-3 align-items-center">
+            <img src="/static/img/user_default01.png" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;" alt="User Image">
+            <div class="bg-secondary text-white rounded p-2 shadow-sm message-box" style="max-width: 60%;">
+              {{ personal_message.message }}
+            </div>
+          </div>
+        {% endif %}
+        {% endfor %}
         </div>
       </div>
       <div class="card-footer ">
