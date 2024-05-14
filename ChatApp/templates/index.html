@@ -3,8 +3,8 @@
 {% block title %}home{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-  <div class="col-8 mx-auto">
+<div class="container my-5" style="padding-top: 100px;">
+  <div class="col-md-9 mx-auto">
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
@@ -25,7 +25,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-8 mx-auto">
+    <div class="col-md-9 mx-auto">
       <ul class="nav nav-pills nav-fill gap-2 p-1 small bg-primary rounded-5 shadow-sm mb-4" id="pillNav2" role="tablist" style="--bs-nav-link-color: var(--bs-white); --bs-nav-pills-link-active-color: var(--bs-primary); --bs-nav-pills-link-active-bg: var(--bs-white);">
         <li class="nav-item" role="presentation">
           <a class="nav-link active rounded-5" id="home-tab2" href="{{ url_for('index') }}" role="button" aria-selected="true">Home</a>
@@ -136,16 +136,7 @@
   </div>
 </div>
 
-<div class="card-footer">
-  <nav aria-label="チャンネルナビゲーション">
-    <ul class="pagination justify-content-center">
-      <li class="page-item" id="prev"><a class="page-link" href="#">prev</a></li>
-      
-      <!--　ページネーションリンクはここに動的に挿入される-->
-      <li class="page-item" id="next"><a class="page-link" href="#">next</a></li>
-    </ul>
-  </nav>
-</div>
+
 {% endblock %}
 
 {% block footer_text %}チャンネル一覧だよ{% endblock %}
@@ -153,7 +144,6 @@
 {% block script %}
 {{ super() }}
 <script src="{{ url_for('static', filename='js/channelDeleteModal.js') }}"></script>
-<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='js/Channels/ChannelUpdateModal.js') }}"></script>
 {% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}チャットルーム{% endblock %}
+{% block style %}
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+    }
+    .card {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* カードの外側にコンテンツがはみ出さないようにする */
+    }
+
+    .card-header, .card-footer {
+      flex-shrink: 0; /* ヘッダーとフッターのサイズを固定 */
+    }
+
+    .chat-container {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* コンテナの外側にコンテンツがはみ出さないようにする */
+    }
+
+    .card-body {
+      min-height: calc(100vh - 250px);
+      flex-grow: 1;
+      overflow-y: auto; /* 必要に応じてスクロールバーを表示 */
+    }
+    .message-box {
+      position: relative;
+      max-width: 60%; /* メッセージボックスの最大幅を設定 */
+    }
+
+    .message-box::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      right: -3px;
+      bottom: -3px;
+      border: 1px solid #414141d6;
+      border-radius: inherit;
+      z-index: 0;
+    }
+
+  </style>
+{% endblock %}
+{% block body %}
+<div class="container mt-3 mb-4" style="padding-top: 78px;">
+  <div class="row col-12 mx-auto">
+    <div class="card mb-3">
+      <div class="card-header d-flex align-items-center me-1">
+        <div>
+          <h5 class="mb-0 text-secondary">Name: <span class="text-primary">{{ personal_channel.name }}</span></h5>
+          <p class="mb-0 text-secondary">Description: {{ personal_channel.description }}</p>
+        </div>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#update-confirmation-modal" data-href="/personal_channels/detail/{{ personal_channel.id }}" data-channel-id="{{ personal_channel.id }}" data-channel-name="{{ personal_channel.name }}" data-channel-description="{{ personal_channel.description }}" class="text-decoration-none ms-3">
+          <i class="fas fa-edit fa-lg text-secondary"></i>
+        </a>
+      </div>
+      <div class="chat-container">
+        <div class="card-body" id="chat-window">
+          {% for personal_message in personal_messages %}
+          {% if personal_message.user_id == user_id %}
+          <!-- ログインユーザーのメッセージ -->
+          <div class="d-flex justify-content-end mb-3 align-items-center">
+            <div class="bg-primary text-white rounded p-2 shadow-sm message-box" style="position: relative; max-width: 60%;">
+              {{ personal_message.message }}
+            </div>
+            <form action="/delete_personal_message" method="POST" class="d-inline">
+              <input type="hidden" name="personal_message_id" value="{{ personal_message.id }}">
+              <input type="hidden" name="personal_channel_id" value="{{ personal_channel.id }}">
+              <button type="submit" class="btn btn-link p-0 ms-2">
+                <i class="fas fa-trash-alt text-secondary"></i>
+              </button>
+            </form>
+          </div>
+        {% else %}
+          <!-- 他のユーザーのメッセージ -->
+          <div class="d-flex justify-content-start mb-3 align-items-center">
+            <img src="/static/img/user_default01.png" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;" alt="User Image">
+            <div class="bg-secondary text-white rounded p-2 shadow-sm message-box" style="max-width: 60%;">
+              {{ personal_message.message }}
+            </div>
+          </div>
+        {% endif %}
+        {% endfor %}
+        </div>
+      </div>
+      <div class="card-footer ">
+        <form id="chat-form" action="/personal_message" method="POST">
+          <div class="input-group">
+            <input type="text" class="form-control chat-input" placeholder="メッセージを入力" name="personal_message" id="chat-message">
+            <input type="hidden" name="personal_channel_id" value="{{ personal_channel.id }}">
+            <button class="btn btn-primary" type="submit">送信</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 個人チャンネル更新時のモーダル -->
+<div id="update-confirmation-modal" class="modal fade" tabindex="-1" aria-labelledby="updateChannelModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateChannelModalLabel">個人チャンネルを編集</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+      </div>
+      <form id="updateChannelForm" class="modal-body" action="/update_personal_detail" method="POST">
+        <div class="mb-3">
+          <input type="text" id="updatePersonalChannelName" class="form-control" placeholder="個人チャンネル名" name="personalChannelName" required>
+        </div>
+        <div class="mb-3">
+          <input type="text" id="updatePersonalChannelDescription" class="form-control" placeholder="個人チャンネルの説明" name="personalChannelDescription" required>
+        </div>
+        <button type="submit" class="btn btn-primary mx-auto d-block w-50" id="update-channel-confirmation-button">更新</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% block pagination %}{% endblock %}
+{% block footer %}{% endblock %}
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/PersonalChannels/personalChannelUpdateModal.js') }}"></script>
+{% endblock %}

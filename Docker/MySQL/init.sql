@@ -48,15 +48,13 @@ CREATE TABLE badge_types (
 CREATE TABLE badges (
     id integer NOT NULL AUTO_INCREMENT,
     user_id integer NOT NULL,
-    message_id integer NOT NULL,
+    associable_type varchar(255) NOT NULL,
+    associable_id integer NOT NULL,
     badge_type_id integer NOT NULL,
-    created_by integer NULL,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE,
-    FOREIGN KEY (badge_type_id) REFERENCES badge_types(id),
-    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+    FOREIGN KEY (badge_type_id) REFERENCES badge_types(id)
 );
 
 CREATE TABLE personal_channels (
@@ -68,6 +66,18 @@ CREATE TABLE personal_channels (
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE personal_messages (
+    id integer NOT NULL AUTO_INCREMENT,
+    user_id integer NOT NULL,
+    channel_id integer NOT NULL,
+    message text NOT NULL,
+    created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (channel_id) REFERENCES personal_channels(id) ON DELETE CASCADE
+);
+
 
 INSERT INTO users (name, email, crypted_password, is_admin) VALUES ('admin', 'admin@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 1);
 INSERT INTO users (name, email, crypted_password, self_introduction) VALUES ('chiikawa', 'chiikawa@example.com', '$2b$12$sBXqSJJ7fOJUAhUHAqq1TuAmgMmfsOiJzvNhwINozNwrtGl8gbqtG', 'フ！');
@@ -81,7 +91,8 @@ INSERT INTO channels (description, name, start_date) VALUES ('5/3Wの投稿は�
 INSERT INTO channels (description, name, start_date) VALUES ('5/4Wの投稿はこちらへ', '5/4W', '2024-05-19');
 INSERT INTO channels (description, name, start_date) VALUES ('5/5Wの投稿はこちらへ', '5/5W', '2024-05-26');
 INSERT INTO channels (description, name, start_date) VALUES ('6/1Wの投稿はこちらへ', '6/1W', '2024-06-02');
-INSERT INTO messages (user_id, channel_id, message) VALUES (1, 1, 'ヤヤーンパパヒュパヒュパ');
+INSERT INTO messages (user_id, channel_id, message) VALUES (2, 1, 'ヤヤーンパパヒュパヒュパ');
 INSERT INTO badge_types (name) VALUES ('GOLD'), ('SILVER'), ('BRONZE');
-INSERT INTO badges (user_id, message_id, badge_type_id, created_by) VALUES (1, 1, 2, NULL);
-INSERT INTO personal_channels (user_id, name, description) VALUES (1, 'virtual_chiikawa', '草むしり検定5級目指して頑張ります！');
+INSERT INTO badges (user_id, associable_type, associable_id, badge_type_id) VALUES (2, 'GeneralChannelMessage', 1, 2);
+INSERT INTO personal_channels (user_id, name, description) VALUES (2, 'virtual_chiikawa', '草むしり検定5級目指して頑張ります！');
+INSERT INTO personal_messages (user_id, channel_id, message) VALUES (2, 1, 'Noneだ、もう朝かと…');

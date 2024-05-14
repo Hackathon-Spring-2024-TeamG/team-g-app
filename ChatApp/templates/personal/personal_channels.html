@@ -4,7 +4,7 @@
 {% block title %}個人チャンネル一覧{% endblock %}
 
 {% block body %}
-<div class="container my-5">
+<div class="container my-5" style="padding-top: 100px;">
   <div class="col-8 mx-auto">
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -26,7 +26,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-8 mx-auto">
+    <div class="col-md-9 mx-auto">
       <ul class="nav nav-pills nav-fill gap-2 p-1 small bg-primary rounded-5 shadow-sm mb-4" id="pillNav2" role="tablist" style="--bs-nav-link-color: var(--bs-white); --bs-nav-pills-link-active-color: var(--bs-primary); --bs-nav-pills-link-active-bg: var(--bs-white);">
         <li class="nav-item" role="presentation">
           <a class="nav-link rounded-5" id="home-tab2" href="{{ url_for('index') }}" role="button" aria-selected="false">Home</a>
@@ -44,16 +44,20 @@
         </div>
         <div class="card-body">
           <ul class="list-group list-group-flush">
-            {% for p_channel in p_channels %}
+            {% for personal_channel in personal_channels %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <div>
-                <h5 class="mb-1">{{ p_channel.name }}</h5>
-                <p class="mb-0 text-muted">{{ p_channel.description }}</p>
+                <h5 class="mb-1">
+                  <a href="/personal_channels/detail/{{ personal_channel.id }}" class="text-primary" style="text-decoration: none; color: inherit;">
+                    {{ personal_channel.name }}
+                  </a>
+                </h5>
+                <p class="mb-0 text-muted">{{ personal_channel.description }}</p>
               </div>
-              {% if p_channel.user_id == user_id %}
+              {% if personal_channel.user_id == user_id %}
               <div>
-                <a href="#" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#update-confirmation-modal" data-href="/update_personal_channel" data-channel-id="{{ p_channel.id }}" data-channel-name="{{ p_channel.name }}" data-channel-description="{{ p_channel.description }}">編集</a>
-                <a href="#" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal" data-href="/personal_channels/delete/{{ p_channel.id }}">削除</a>
+                <a href="#" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#update-confirmation-modal" data-href="/update_personal_channel" data-channel-id="{{ personal_channel.id }}" data-channel-name="{{ personal_channel.name }}" data-channel-description="{{ personal_channel.description }}">編集</a>
+                <a href="#" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-confirmation-modal" data-href="/personal_channels/delete/{{ personal_channel.id }}">削除</a>
               </div>
               {% endif %}
             </li>
@@ -139,5 +143,4 @@
 <script src="{{ url_for('static', filename='js/channelDeleteModal.js') }}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='js/PersonalChannels/personalChannelUpdateModal.js') }}"></script>
-
 {% endblock %}
