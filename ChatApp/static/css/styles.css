@@ -1,0 +1,22 @@
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+}
+
+.my-message {
+  align-self: flex-end;
+  background-color: #dcf8c6;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 5px 10px 5px 50%;
+  max-width: 50%;
+}
+
+.other-message {
+  align-self: flex-start;
+  background-color: #e2e2e2;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 5px 50% 5px 10px;
+  max-width: 50%;
+}

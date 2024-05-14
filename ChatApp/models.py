@@ -105,6 +105,8 @@ class dbConnect:
             sql = "INSERT INTO channels (name, description, start_date) VALUES (%s, %s, %s);"
             cur.execute(sql, (newChannelName, newChannelDescription, newStartDate))
             conn.commit()
+            # 作成したチャンネルのIDを取得
+            new_channel_id = cur.lastrowid
         except Exception as e:
             print(e + 'が発生しています')
             abort(500)
@@ -113,6 +115,7 @@ class dbConnect:
                 cur.close()
             if conn is not None:
                 conn.close()
+        return new_channel_id
 
     @staticmethod
     def getPersonalChannelALL():
@@ -298,6 +301,47 @@ class dbConnect:
             conn.commit()
         except Exception as e:
             print(str(e), 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
+
+    def getMessageAll(channel_id):
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = """
+                        SELECT m.id, u.name AS user_name, m.message, m.created_at
+                        FROM messages m
+                        JOIN users u ON m.user_id = u.id
+                        WHERE m.channel_id = %s
+                        ORDER BY m.created_at;
+                    """
+            cur.execute(sql, (channel_id,))
+            messages = cur.fetchall()
+            return messages
+        except Exception as e:
+            print(e + 'が発生しています')
+            abort(500)
+        finally:
+            cur.close()
+
+    def addMessage(user_id, channel_id, message):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "INSERT INTO messages (user_id, channel_id, message) VALUES (%s, %s, %s)"
+            values = (user_id, channel_id, message)
+            cur.execute(sql, values)
+            print(f"SQL: {sql}")
+            print(f"Values: {values}")
+            conn.commit()
+        except Exception as e:
+            print(str(e) + 'が発生しています')
             abort(500)
         finally:
             if cur is not None:
