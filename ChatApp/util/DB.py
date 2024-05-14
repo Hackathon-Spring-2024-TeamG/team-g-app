@@ -6,10 +6,11 @@ class DB:
         conn = None
         try:
             conn = pymysql.connect(
-                host="db",
-                db="chatapp",
-                user="testuser",
-                password="testuser",
+                host="",
+                database="",
+                port=3306,
+                user="",
+                password="",
                 charset="utf8",
                 cursorclass=pymysql.cursors.DictCursor
             )
