@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>{{ channel.name }}</title>
+{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css', _external=True) }}">
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">{{ channel.name }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="chat-messages">
+            {% for message in messages %}
+            <div class="message {% if message.user_id == session.get('user_id') %}my-message{% else %}other-message{% endif %}">
+              <div class="message-header">
+                <span class="message-author">{{ message.user_name }}</span>
+                <span class="message-timestamp">{{ message.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+              </div>
+              <div class="message-content">{{ message.message }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="card-footer">
+          <form id="message-form" action="{{ url_for('send_message') }}" method="post">
+            <div class="input-group">
+              <input type="text" class="form-control" name="message" placeholder="メッセージを入力...">
+              <button type="submit" class="btn btn-primary">送信</button>
+              <input type="hidden" name="channel_id" value="{{ channel_id }}">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script>
+  // チャットメッセージの自動スクロール機能を実装する
+  const chatMessages = document.querySelector('.chat-messages');
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+</script>
+{% endblock %}

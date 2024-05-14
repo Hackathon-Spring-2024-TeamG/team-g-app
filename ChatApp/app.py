@@ -215,5 +215,32 @@ def update_channel(channel_id):
         flash('チャンネルは正常に変更されました。', 'success')
         return redirect('/')
 
+@app.route('/channels/<int:channel_id>', methods=['GET'])
+def channel_detail(channel_id):
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+    else:
+        channel = dbConnect.getChannelById(channel_id)
+        messages = dbConnect.getMessageAll(channel_id)
+        return render_template('detail.html', channel=channel, messages=messages, channel_id=channel_id)
+
+
+@app.route('/send_message', methods=['POST'])
+def send_message():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+    else:
+        channel_id = request.form.get('channel_id')
+        message = request.form.get('message')
+
+        # メッセージの送信者のユーザーIDを取得して、データベースに追加
+        dbConnect.addMessage(user_id, channel_id, message)
+        print(channel_id)
+
+        # 送信が完了したらチャンネル詳細ページにリダイレクト
+        return redirect('/channels/' + str(channel_id))
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)

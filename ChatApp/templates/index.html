@@ -45,10 +45,12 @@
           <ul class="list-group list-group-flush">
             {% for channel in channels %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
+              <a href="{{ url_for('channel_detail', channel_id=channel.id) }}" class="text-decoration-none">
               <div>
                 <h5 class="mb-1">{{ channel.name }}</h5>
                 <p class="mb-0 text-muted">{{ channel.description }}</p>
               </div>
+              </a>
               <div class="ms-auto">
                 {% if session.is_admin %}
                 <a href="/channels/edit/{{ channel.id }}" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#update-confirmation-modal" data-channel-id="{{ channel.id }}" data-channel-name="{{ channel.name }}" data-channel-description="{{ channel.description }}">編集</a>
