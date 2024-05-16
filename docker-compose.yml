@@ -50,7 +50,7 @@ services:
     # ローカルのカレンディレクトリをコンテナの/codeにマウントする
     volumes:
     
-      - ./Chatapp:/code
+      - ./ChatApp:/code
       - ./Docker/Flask/:/code/Docker/Flask/
       - uwsgi-socket:/tmp/
       - uwsgi-logs:/var/log/uwsgi/
