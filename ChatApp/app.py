@@ -279,7 +279,7 @@ def show_account():
     return render_template('account.html', account=account, user_id=user_id)
 
 
-@app.route('/channels/<int:channel_id>', methods=['GET'])
+@app.route('/channels/detail/<int:channel_id>', methods=['GET'])
 def channel_detail(channel_id):
     user_id = session.get('user_id')
     if user_id is None:

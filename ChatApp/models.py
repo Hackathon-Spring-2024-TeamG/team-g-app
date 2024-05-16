@@ -177,13 +177,7 @@ class dbConnect:
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
-            sql = """
-                        SELECT m.id, u.name AS user_name, m.message, m.created_at
-                        FROM messages m
-                        JOIN users u ON m.user_id = u.id
-                        WHERE m.channel_id = %s
-                        ORDER BY m.created_at;
-                    """
+            sql = "SELECT m.id, u.id AS user_id, u.name, m.message FROM messages AS m INNER JOIN users AS u ON m.user_id = u.id WHERE channel_id = %s ORDER BY m.created_at ASC;"
             cur.execute(sql, (channel_id,))
             messages = cur.fetchall()
             return messages
@@ -193,7 +187,7 @@ class dbConnect:
         finally:
             cur.close()
 
-    def addMessage(user_id, channel_id, message):
+    def createMessage(user_id, channel_id, message):
         conn = None
         cur = None
         try:

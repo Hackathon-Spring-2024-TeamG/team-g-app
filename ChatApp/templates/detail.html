@@ -1,55 +1,117 @@
 {% extends "base.html" %}
 
-{% block title %}
-<title>{{ channel.name }}</title>
-{% endblock %}
+{% block title %}チャットルーム{% endblock %}
+{% block style %}
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+    }
+    .card {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* カードの外側にコンテンツがはみ出さないようにする */
+    }
 
-{% block head %}
-{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css', _external=True) }}">
-{% endblock %}
+    .card-header, .card-footer {
+      flex-shrink: 0; /* ヘッダーとフッターのサイズを固定 */
+    }
 
+    .chat-container {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* コンテナの外側にコンテンツがはみ出さないようにする */
+    }
+
+    .card-body {
+      min-height: calc(100vh - 250px);
+      flex-grow: 1;
+      overflow-y: auto; /* 必要に応じてスクロールバーを表示 */
+    }
+    .message-box {
+      position: relative;
+      max-width: 60%; /* メッセージボックスの最大幅を設定 */
+    }
+
+    .message-box::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      right: -3px;
+      bottom: -3px;
+      border: 1px solid #414141d6;
+      border-radius: inherit;
+      z-index: 0;
+    }
+
+  </style>
+{% endblock %}
 {% block body %}
-<div class="container my-5" style="padding-top: 78px;">
-  <div class="row">
-    <div class="col-md-8 mx-auto">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="mb-0">{{ channel.name }}</h5>
+<div class="container mt-3 mb-4" style="padding-top: 78px;">
+  <div class="row col-12 mx-auto">
+    <div class="card mb-3">
+      <div class="card-header d-flex align-items-center me-1">
+        <div>
+          <h5 class="mb-0 text-secondary">Name: <span class="text-primary">{{ channel.name }}</span></h5>
+          <p class="mb-0 text-secondary">Description: {{ channel.description }}</p>
         </div>
-        <div class="card-body">
-          <div class="chat-messages">
-            {% for message in messages %}
-            <div class="message {% if message.user_id == session.get('user_id') %}my-message{% else %}other-message{% endif %}">
-              <div class="message-header">
-                <span class="message-author">{{ message.user_name }}</span>
-                <span class="message-timestamp">{{ message.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
-              </div>
-              <div class="message-content">{{ message.message }}</div>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#update-confirmation-modal" data-href="/channels/detail/{{ channel.id }}" data-channel-id="{{ channel.id }}" data-channel-name="{{ channel.name }}" data-channel-description="{{ channel.description }}" class="text-decoration-none ms-3">
+          <i class="fas fa-edit fa-lg text-secondary"></i>
+        </a>
+      </div>
+      <div class="chat-container">
+        <div class="card-body" id="chat-window">
+          {% for message in messages %}
+          {% if message.user_id == user_id %}
+          <!-- ログインユーザーのメッセージ -->
+          <div class="d-flex justify-content-end mb-3 align-items-center">
+            <div class="bg-primary text-white rounded p-2 shadow-sm message-box" style="position: relative; max-width: 60%;">
+              {{ message.message }}
             </div>
-            {% endfor %}
+            <form action="/delete_message" method="POST" class="d-inline">
+              <input type="hidden" name="message_id" value="{{ message.id }}">
+              <input type="hidden" name="channel_id" value="{{ channel.id }}">
+              <button type="submit" class="btn btn-link p-0 ms-2">
+                <i class="fas fa-trash-alt text-secondary"></i>
+              </button>
+            </form>
           </div>
-        </div>
-        <div class="card-footer">
-          <form id="message-form" action="{{ url_for('send_message') }}" method="post">
-            <div class="input-group">
-              <input type="text" class="form-control" name="message" placeholder="メッセージを入力...">
-              <button type="submit" class="btn btn-primary">送信</button>
-              <input type="hidden" name="channel_id" value="{{ channel_id }}">
+        {% else %}
+          <!-- 他のユーザーのメッセージ -->
+          <div class="d-flex justify-content-start mb-3 align-items-center">
+            <img src="/static/img/user_default01.png" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;" alt="User Image">
+            <div class="bg-secondary text-white rounded p-2 shadow-sm message-box" style="max-width: 60%;">
+              {{ message.message }}
             </div>
-          </form>
+          </div>
+        {% endif %}
+        {% endfor %}
         </div>
+      </div>
+      <div class="card-footer ">
+        <form id="chat-form" action="/message" method="POST">
+          <div class="input-group">
+            <input type="text" class="form-control chat-input" placeholder="メッセージを入力" name="message" id="chat-message">
+            <input type="hidden" name="channel_id" value="{{ channel.id }}">
+            <button class="btn btn-primary" type="submit">送信</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
+
+{% block pagination %}{% endblock %}
+{% block footer %}{% endblock %}
 {% endblock %}
 
 {% block script %}
 {{ super() }}
-<script>
-  // チャットメッセージの自動スクロール機能を実装する
-  const chatMessages = document.querySelector('.chat-messages');
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-</script>
 {% endblock %}
