@@ -146,6 +146,34 @@ def delete_channel(channel_id):
         flash('チャンネルは正常に削除されました。', 'success')
         return redirect('/')
 
+# チャンネル詳細ページ表示
+@app.route('/channels/detail/<int:channel_id>', methods=['GET'])
+def channel_detail(channel_id):
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+    else:
+        channel = dbConnect.getChannelById(channel_id)
+        messages = dbConnect.getMessageAll(channel_id)
+        print(messages)
+        print(user_id)
+        return render_template('detail.html', channel=channel, messages=messages, channel_id=channel_id, user_id=user_id)
+
+# メッセージ送信
+@app.route('/message', methods=['POST'])
+def send_message():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+
+    message = request.form.get('message')
+    channel_id = request.form.get('channel_id')
+
+    if message:
+        dbConnect.createMessage(user_id, channel_id, message)
+
+    return redirect(f'/channels/detail/{channel_id}')
+
 # 個人チャンネル一覧ページの表示
 @app.route('/personal_channels')
 def show_personal_channels():
@@ -277,32 +305,6 @@ def show_account():
     else:
         account = dbConnect.getUserAccount(user_id)
     return render_template('account.html', account=account, user_id=user_id)
-
-
-@app.route('/channels/detail/<int:channel_id>', methods=['GET'])
-def channel_detail(channel_id):
-    user_id = session.get('user_id')
-    if user_id is None:
-        return redirect('/login')
-    else:
-        channel = dbConnect.getChannelById(channel_id)
-        messages = dbConnect.getMessageAll(channel_id)
-        return render_template('detail.html', channel=channel, messages=messages, channel_id=channel_id)
-
-
-@app.route('/message', methods=['POST'])
-def send_message():
-    user_id = session.get('user_id')
-    if user_id is None:
-        return redirect('/login')
-
-    message = request.form.get('message')
-    channel_id = request.form.get('channel_id')
-
-    if message:
-        dbConnect.createMessage(user_id, channel_id, message)
-
-    return redirect(f'/channels/detail/{channel_id}')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
