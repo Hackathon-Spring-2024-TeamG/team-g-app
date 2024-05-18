@@ -39,22 +39,16 @@ CREATE TABLE messages (
     FOREIGN KEY (channel_id) REFERENCES channels(id) ON DELETE CASCADE
 );
 
-CREATE TABLE badge_types (
-    id integer NOT NULL AUTO_INCREMENT,
-    name varchar(255) NOT NULL UNIQUE,
-    PRIMARY KEY (id)
-);
-
 CREATE TABLE badges (
     id integer NOT NULL AUTO_INCREMENT,
     user_id integer NOT NULL,
-    associable_type varchar(255) NOT NULL,
+    associable_type enum('message', 'personal_message') NOT NULL,
     associable_id integer NOT NULL,
-    badge_type_id integer NOT NULL,
+    image_url varchar(255) NOT NULL,
+    badge_type enum('fast_parrot', 'angel_parrot') NOT NULL,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (badge_type_id) REFERENCES badge_types(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE personal_channels (
@@ -92,7 +86,6 @@ INSERT INTO channels (description, name, start_date) VALUES ('5/4Wの投稿は�
 INSERT INTO channels (description, name, start_date) VALUES ('5/5Wの投稿はこちらへ', '5/5W', '2024-05-26');
 INSERT INTO channels (description, name, start_date) VALUES ('6/1Wの投稿はこちらへ', '6/1W', '2024-06-02');
 INSERT INTO messages (user_id, channel_id, message) VALUES (2, 1, 'ヤヤーンパパヒュパヒュパ');
-INSERT INTO badge_types (name) VALUES ('GOLD'), ('SILVER'), ('BRONZE');
-INSERT INTO badges (user_id, associable_type, associable_id, badge_type_id) VALUES (2, 'GeneralChannelMessage', 1, 2);
+INSERT INTO badges (user_id, associable_type, associable_id, image_url, badge_type) VALUES (2, 'personal_message', 1, '/static/img/fast_parrot.gif', 'fast_parrot');
 INSERT INTO personal_channels (user_id, name, description) VALUES (2, 'virtual_chiikawa', '草むしり検定5級目指して頑張ります！');
 INSERT INTO personal_messages (user_id, channel_id, message) VALUES (2, 1, 'Noneだ、もう朝かと…');

@@ -71,28 +71,40 @@
           {% for personal_message in personal_messages %}
           {% if personal_message.user_id == user_id %}
           <!-- ログインユーザーのメッセージ -->
-          <div class="d-flex justify-content-end mb-3 align-items-center">
+          <div class="d-flex justify-content-end mt-5 align-items-center personal-message-option" data-message-id="{{ personal_message.id }}">
             <div class="bg-primary text-white rounded p-2 shadow-sm message-box" style="position: relative; max-width: 60%;">
               {{ personal_message.message }}
+              <div class="user-selected-badge" style="position: absolute; bottom: -34px; left: 3px;"></div>
+              <div style="position: absolute; bottom: -34px; right: 4px;">
+                <button type="button" class="btn p-0" data-bs-toggle="modal" data-bs-target="#badge-selection-modal">
+                  <i class="fas fa-plus text-body-secondary"></i>
+                </button>
+              </div>
             </div>
             <form action="/delete_personal_message" method="POST" class="d-inline">
               <input type="hidden" name="personal_message_id" value="{{ personal_message.id }}">
               <input type="hidden" name="personal_channel_id" value="{{ personal_channel.id }}">
               <button type="submit" class="btn btn-link p-0 ms-2">
-                <i class="fas fa-trash-alt text-secondary"></i>
+                <i class="fas fa-trash-alt text-primary"></i>
               </button>
             </form>
           </div>
-        {% else %}
+          {% else %}
           <!-- 他のユーザーのメッセージ -->
-          <div class="d-flex justify-content-start mb-3 align-items-center">
+          <div class="d-flex justify-content-start mt-5 align-items-center personal-message-option" data-message-id="{{ personal_message.id }}">
             <img src="/static/img/user_default01.png" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;" alt="User Image">
             <div class="bg-secondary text-white rounded p-2 shadow-sm message-box" style="max-width: 60%;">
               {{ personal_message.message }}
+              <div class="user-selected-badge" style="position: absolute; bottom: -34px; left: 3px;"></div>
+              <div style="position: absolute; bottom: -34px; right: 4px;">
+                <button type="button" class="btn p-0" data-bs-toggle="modal" data-bs-target="#badge-selection-modal">
+                  <i class="fas fa-plus text-body-secondary"></i>
+                </button>
+              </div>
             </div>
           </div>
-        {% endif %}
-        {% endfor %}
+          {% endif %}
+          {% endfor %}
         </div>
       </div>
       <div class="card-footer ">
@@ -129,6 +141,24 @@
   </div>
 </div>
 
+<!-- バッジ付与時のモーダル -->
+<div id="badge-selection-modal" class="modal fade" tabindex="-1" aria-labelledby="badgeSelectionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <!-- GIF画像のバッジ -->
+        <button class="btn badge-select-option" data-badge="/static/img/fast_parrot.gif" data-badge-type="FAST_PARROT" aria-label="Fast Parrot">
+          <img src="/static/img/fast_parrot.gif" alt="Fast Parrot" style="width: 24px; height: 24px;">
+        </button>
+        <button class="btn badge-select-option" data-badge="/static/img/angel_parrot.gif" data-badge-type="ANGEL_PARROT" aria-label="Angel Parrot">
+          <img src="/static/img/angel_parrot.gif" alt="Angel Parrot" style="width: 24px; height: 24px;">
+        </button>
+        <!-- 他のGIF画像のバッジも同様に追加 -->
+      </div>
+    </div>
+  </div>
+</div>
+
 {% block pagination %}{% endblock %}
 {% block footer %}{% endblock %}
 {% endblock %}
@@ -136,4 +166,5 @@
 {% block script %}
 {{ super() }}
 <script src="{{ url_for('static', filename='js/PersonalChannels/personalChannelUpdateModal.js') }}"></script>
+<script src="{{ url_for('static', filename='js/PersonalChannels/badgeAndMessageHandler.js') }}"></script>
 {% endblock %}
