@@ -2,6 +2,8 @@ from flask import Flask, request, redirect, render_template, session, flash, abo
 from flask_bcrypt import Bcrypt
 import secrets, re
 from models import dbConnect
+from util.enums import BadgeType, AssociableType
+from util.badge_image_handler import determineImageUrl
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -82,7 +84,6 @@ def userLogin():
         flash('ログイン成功しました', 'success')
 
     return redirect('/')
-
 
 # ログアウト
 @app.route('/logout')
@@ -205,7 +206,7 @@ def add_personal_channels():
         flash('個人チャンネルは既に存在します。', 'danger')
         return redirect('/personal_channels')
 
-# 個人チャンネルの更新
+# 個人チャンネルの更新（個人チャンネル一覧ページで非同期通信による更新)
 @app.route('/update_personal_channel', methods=['POST'])
 def update_personal_channel():
     user_id = session.get('user_id')
@@ -287,14 +288,12 @@ def delete_personal_message():
         return redirect('/login')
 
     personal_message_id = request.form.get('personal_message_id')
-    print(personal_message_id)
     personal_channel_id = request.form.get('personal_channel_id')
-    print(personal_channel_id)
 
     if personal_message_id:
         dbConnect.deletePersonalMessage(personal_message_id)
 
-    return redirect(f'personal_channels/detail/{personal_channel_id}')
+    return redirect(f'/personal_channels/detail/{personal_channel_id}')
 
 # アカウントページ表示
 @app.route('/account')
@@ -305,6 +304,33 @@ def show_account():
     else:
         account = dbConnect.getUserAccount(user_id)
     return render_template('account.html', account=account, user_id=user_id)
+
+# バッジ作成（個人チャンネル詳細ページ内のメッセージに対して）
+@app.route('/add_personal_badge', methods=['POST'])
+def add_personal_badge():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect('/login')
+
+    associable_id = request.json.get('associableId')
+    if not associable_id:
+        return "associableIdが指定されていません", 400
+
+    associable_type = AssociableType.PERSONAL_MESSAGE.value
+    badge_type_str = request.json.get('badgeType').lower()
+    badge_type = BadgeType[badge_type_str.upper()].value
+
+    image_url = determineImageUrl(badge_type)
+
+    if image_url is None:
+        print("バッジタイプに対する画像URLが見つかりません。")
+
+    personal_channel = dbConnect.getPersonalChannelByUserId(user_id)
+    personal_channel_id = personal_channel['id']
+
+    dbConnect.addPersonalBadge(user_id, associable_type, associable_id, image_url, badge_type.lower())
+    return redirect(f'/personal_channels/detail/{personal_channel_id}')
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)

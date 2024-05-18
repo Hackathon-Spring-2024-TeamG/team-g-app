@@ -277,7 +277,7 @@ class dbConnect:
             conn = DB.getConnection()
             cur = conn.cursor()
             sql = "INSERT INTO personal_channels (user_id, name, description) VALUES (%s, %s, %s);"
-            cur.execute(sql, (user_id, newChannelName, newChannelDescription,))
+            cur.execute(sql, (user_id, newChannelName, newChannelDescription))
             conn.commit()
         except Exception as e:
             print(str(e), 'が発生しています')
@@ -296,7 +296,7 @@ class dbConnect:
             conn = DB.getConnection()
             cur = conn.cursor()
             sql = "UPDATE personal_channels SET user_id=%s, name=%s, description=%s WHERE id=%s;"
-            cur.execute(sql, (user_id, newChannelName, newChannelDescription, personal_channel_id,))
+            cur.execute(sql, (user_id, newChannelName, newChannelDescription, personal_channel_id))
             conn.commit()
         except Exception as e:
             print(str(e), 'が発生しています')
@@ -336,7 +336,6 @@ class dbConnect:
             sql = "SELECT pm.id, u.id AS user_id, u.name, pm.message FROM personal_messages AS pm INNER JOIN users AS u ON pm.user_id = u.id WHERE channel_id = %s ORDER BY pm.created_at ASC;"
             cur.execute(sql, (personal_channel_id,))
             personal_messages = cur.fetchall()
-            print(personal_messages)
             return personal_messages
         except Exception as e:
             print(str(e), 'が発生しています')
@@ -355,7 +354,7 @@ class dbConnect:
             conn = DB.getConnection()
             cur = conn.cursor()
             sql = "INSERT INTO personal_messages(user_id, channel_id, message) VALUES(%s, %s, %s);"
-            cur.execute(sql, (user_id, personal_channel_id, personal_message,))
+            cur.execute(sql, (user_id, personal_channel_id, personal_message))
             conn.commit()
         except Exception as e:
             print(str(e), 'が発生しています')
@@ -385,6 +384,24 @@ class dbConnect:
             if conn is not None:
                 conn.close()
 
+    @staticmethod
+    def addPersonalBadge(user_id, associable_type, associable_id, image_url, badge_type):
+        conn = None
+        cur = None
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "INSERT INTO badges (user_id, associable_type, associable_id, image_url, badge_type) VALUES (%s, %s, %s, %s, %s);"
+            cur.execute(sql, (user_id, associable_type, associable_id, image_url, badge_type))
+            conn.commit()
+        except Exception as e:
+            print(str(e), 'が発生しています')
+            abort(500)
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
 
 # -----------------------------ここから下はアカウント機能関連-----------------------------------
     @staticmethod
